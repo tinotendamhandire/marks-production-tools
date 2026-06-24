@@ -184,7 +184,7 @@ input[type=range] { flex:1; padding:0; background:transparent; border:none; acce
     <button class="help-close" onclick="document.getElementById('helpOverlay').classList.remove('visible')">✕</button>
     <h2>🎛️ Stage Plot Designer - Smart Edition</h2>
     <h3>Workflow</h3>
-    <div class="help-tip">1 · Define your <strong>crew</strong> once. Each person gets a colour.<br><br>2 · Add your <strong>acts</strong>. When you click "+ Add Act", it automatically copies everything currently on stage to save time.<br><br>3 · Drop elements on stage. Assign them to crew in the 'Selected Element' panel.<br><br>4 · <strong>Smart Changeovers:</strong> The tool automatically compares the current act to the previous act. If you add something, it calculates it as a "Bring On". If you delete something that was there previously, it strikes it and leaves a "ghost" so the crew knows where to grab it.</div>
+    <div class="help-tip">1 · Define your <strong>crew</strong> once. Each person gets a colour.<br><br>2 · Add your <strong>acts</strong>. When you click "+ Add Act", it automatically copies everything currently on stage to save time.<br><br>3 · Drop elements on stage. Assign them to crew in the 'Selected Element' panel.<br><br>4 · <strong>Smart Timeline:</strong> Adding, moving, or modifying gear automatically cascades to future acts. If you Strike an item, it removes it from future acts, and leaves a "ghost" on the current act so the crew knows where to grab it.</div>
     <h3>Views & Printing</h3>
     <div class="help-tip"><strong>Layout View</strong> — Clean diagram, native gear colours. Best for directors and performers.<br><br><strong>Changeover View</strong> — Element boxes take on the assigned Crew's colour. Auto-generates aggregated "Bring on" and "Strike" lists based on differences between acts. Best for stage crew.</div>
   </div>
@@ -197,7 +197,7 @@ input[type=range] { flex:1; padding:0; background:transparent; border:none; acce
     <div class="ss-hdr" onclick="toggleSS(this)">🎭 Acts (Run Order) <span class="arr">▾</span></div>
     <div class="ss-body">
       <div id="actList"></div>
-      <button class="btn btn-full" style="background:#805ad5;margin-top:8px;" onclick="addAct()" data-tip="Creates a new act inheriting all items currently on stage.">＋ Add Act (Clone Stage)</button>
+      <button class="btn btn-full" style="background:#805ad5;margin-top:8px;" onclick="addAct()" data-tip="Creates a new act right after this one, inheriting all stage items.">＋ Add Act</button>
       
       <div style="border-top:1px solid #4a5568; margin:14px 0 10px;"></div>
       <label>Act Title</label>
@@ -229,7 +229,7 @@ input[type=range] { flex:1; padding:0; background:transparent; border:none; acce
       <select id="elCrewSelect" onchange="setSelectedCrew(this.value)" style="width:100%;"></select>
       <label>Label</label>
       <input type="text" id="elLabelInput" oninput="setSelectedLabel(this.value)" placeholder="e.g. B1 mic">
-      <button class="btn" style="background:#e53e3e;width:100%;margin-top:14px;" onclick="deleteSelected()" data-tip="Removes element from stage (Calculates as 'Strike' if it was in the previous act).">🗑 Remove / Strike</button>
+      <button class="btn" style="background:#e53e3e;width:100%;margin-top:14px;" onclick="deleteSelected()" data-tip="Removes element from this and future acts. (Calculates as 'Strike' in changeover view).">🗑 Remove / Strike</button>
     </div>
   </div>
 
@@ -395,19 +395,22 @@ function selectAct(i) {
 function addAct() {
   savePositions();
   const baseAct = showDB.acts[activeActIdx];
-  // Deep clone elements to carry stage state forward
+  // Deep clone elements to pull stage state forward
   const clonedElements = baseAct ? baseAct.elements.map(e => ({...e})) : [];
   const clonedMics = baseAct ? baseAct.micChannels.map(m => ({...m})) : [];
   
-  showDB.acts.push({ 
+  const newAct = { 
     id:'a'+Date.now(), 
     title:'New Act', 
     ctx: baseAct ? baseAct.ctx : '', 
     notes:'', 
     micChannels: clonedMics, 
     elements: clonedElements 
-  });
-  activeActIdx = showDB.acts.length-1;
+  };
+  
+  // Insert exactly after the currently selected act
+  showDB.acts.splice(activeActIdx + 1, 0, newAct);
+  activeActIdx = activeActIdx + 1;
   rebuildAll();
 }
 
@@ -665,7 +668,19 @@ function drawNodeToGrid(grid, ed, isGhost) {
     el.ondblclick = (e) => {
       e.stopPropagation();
       const n = prompt('Rename element:', ed.label||ed.icon);
-      if (n!==null) { ed.label=n.trim(); renderCanvas(); selectEl(ed.id); }
+      if (n!==null) { 
+        const oldVal = ed.label;
+        ed.label = n.trim(); 
+        
+        // Cascade rename to future acts IF they haven't been renamed independently
+        for(let i = activeActIdx + 1; i < showDB.acts.length; i++) {
+          const futureEd = showDB.acts[i].elements.find(f => f.id === ed.id);
+          if (futureEd && futureEd.label === oldVal) futureEd.label = ed.label;
+        }
+        
+        renderCanvas(); 
+        selectEl(ed.id); 
+      }
     };
     attachDrag(el, ed);
   } else {
@@ -699,18 +714,39 @@ function selectEl(id) {
 
 function setSelectedCrew(crewId) {
   if (!selectedElId) return;
-  const a=showDB.acts[activeActIdx];
-  const ed=a.elements.find(e=>e.id===selectedElId);
-  if (ed) { ed.crew=crewId; savePositions(); renderCanvas(); selectEl(selectedElId); }
+  const a = showDB.acts[activeActIdx];
+  const ed = a.elements.find(e=>e.id===selectedElId);
+  if (ed) { 
+    const oldCrew = ed.crew;
+    ed.crew = crewId; 
+    
+    // Cascade to future acts IF they haven't been reassigned independently
+    for(let i = activeActIdx + 1; i < showDB.acts.length; i++) {
+      const futureEd = showDB.acts[i].elements.find(f => f.id === selectedElId);
+      if (futureEd && futureEd.crew === oldCrew) futureEd.crew = crewId;
+    }
+    
+    savePositions(); 
+    renderCanvas(); 
+    selectEl(selectedElId); 
+  }
 }
 
 function setSelectedLabel(val) {
   if (!selectedElId) return;
-  const a=showDB.acts[activeActIdx];
-  const ed=a.elements.find(e=>e.id===selectedElId);
+  const a = showDB.acts[activeActIdx];
+  const ed = a.elements.find(e=>e.id===selectedElId);
   if (ed) {
-    ed.label=val;
-    const node=document.getElementById('el_'+selectedElId);
+    const oldVal = ed.label;
+    ed.label = val;
+    
+    // Cascade to future acts IF they haven't been renamed independently
+    for(let i = activeActIdx + 1; i < showDB.acts.length; i++) {
+      const futureEd = showDB.acts[i].elements.find(f => f.id === selectedElId);
+      if (futureEd && futureEd.label === oldVal) futureEd.label = val;
+    }
+    
+    const node = document.getElementById('el_'+selectedElId);
     if (node) { const lbl=node.querySelector('.el-label'); if(lbl) lbl.textContent=val; }
   }
 }
@@ -721,9 +757,11 @@ function deleteSelected() {
 }
 
 function deleteElById(id) {
-  const a=showDB.acts[activeActIdx];
-  a.elements=a.elements.filter(e=>e.id!==id);
-  selectedElId=null;
+  // Removes from current act AND ALL FUTURE ACTS automatically!
+  for(let i = activeActIdx; i < showDB.acts.length; i++) {
+    showDB.acts[i].elements = showDB.acts[i].elements.filter(e => e.id !== id);
+  }
+  selectedElId = null;
   document.getElementById('elPanel').style.display='none';
   renderCanvas();
 }
@@ -731,7 +769,13 @@ function deleteElById(id) {
 function spawnEl(icon, label, color) {
   savePositions();
   elUID++;
-  showDB.acts[activeActIdx].elements.push({ id:'el_'+elUID, icon, label, color, x:'40%', y:'35%', crew:'' });
+  const newEl = { id:'el_'+elUID, icon, label, color, x:'40%', y:'35%', crew:'' };
+  
+  // Instantly cascade drop onto current act AND ALL FUTURE ACTS
+  for(let i = activeActIdx; i < showDB.acts.length; i++) {
+    showDB.acts[i].elements.push({...newEl});
+  }
+  
   renderCanvas();
 }
 
@@ -758,13 +802,33 @@ function attachDrag(node, ed) {
 
 // ─── SAVE POSITIONS ───────────────────────────────────────────────────────────
 function savePositions() {
-  const a=showDB.acts[activeActIdx];
-  const grid=document.getElementById('stageGrid');
+  const a = showDB.acts[activeActIdx];
+  const grid = document.getElementById('stageGrid');
   if (!grid||!a) return;
+  
   grid.querySelectorAll('.placed-el:not(.ghost-el)').forEach(node => {
-    const id=node.id.replace('el_','');
-    const ed=a.elements.find(e=>e.id===id);
-    if (ed) { ed.x=node.style.left; ed.y=node.style.top; }
+    const id = node.id.replace('el_','');
+    const ed = a.elements.find(e=>e.id===id);
+    if (ed) { 
+      const oldX = ed.x;
+      const oldY = ed.y;
+      const newX = node.style.left;
+      const newY = node.style.top;
+      
+      ed.x = newX; 
+      ed.y = newY; 
+      
+      if (oldX !== newX || oldY !== newY) {
+        // Cascade move to future acts IF they haven't been independently moved already
+        for(let i = activeActIdx + 1; i < showDB.acts.length; i++) {
+          const futureEd = showDB.acts[i].elements.find(f => f.id === id);
+          if (futureEd && futureEd.x === oldX && futureEd.y === oldY) {
+            futureEd.x = newX;
+            futureEd.y = newY;
+          }
+        }
+      }
+    }
   });
 }
 
