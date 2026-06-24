@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Audience Program Maker</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0; padding: 0;
+            display: flex;
+            height: 100vh;
+            background: #1a202c;
+            color: #fff;
+            overflow: hidden;
+        }
+        /* ── HOME BUTTON ── */
+        .home-btn {
+            position: fixed; top: 14px; right: 16px; z-index: 9999;
+            background: #2d3748; color: #a0aec0;
+            border: 1px solid #4a5568; border-radius: 7px;
+            padding: 6px 13px; font-size: 8.5pt; font-weight: bold;
+            text-decoration: none;
+            display: flex; align-items: center; gap: 6px;
+            transition: background 0.15s, color 0.15s;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+        .home-btn:hover { background: #4a5568; color: #fff; }
+
+        /* ── PANELS ── */
+        .left-panel {
+            width: 320px; min-width: 320px;
+            background: #232d3f;
+            border-right: 2px solid #2d3748;
+            overflow-y: auto;
+            padding: 16px;
+            display: flex; flex-direction: column; gap: 6px;
+        }
+        .right-panel {
+            flex: 1;
+            background: #e2e8f0;
+            overflow-y: auto;
+            padding: 30px 20px;
+            display: flex; flex-direction: column; align-items: center;
+        }
+
+        /* ── SIDEBAR SECTIONS ── */
+        .s-section {
+            background: #1a202c;
+            border: 1px solid #2d3748;
+            border-radius: 8px;
+            margin-bottom: 4px;
+            flex-shrink: 0;
+        }
+        .s-header {
+            background: #2d3748; padding: 8px 12px;
+            font-size: 8.5pt; font-weight: bold; color: #a0aec0;
+            letter-spacing: 1.2px; text-transform: uppercase;
+            display: flex; align-items: center; gap: 6px;
+            cursor: pointer; border-radius: 8px; user-select: none;
+            transition: background 0.15s;
+        }
+        .s-header:hover { background: #374151; }
+        .s-header .arr { margin-left: auto; font-size: 9pt; color: #718096; transition: transform 0.2s; }
+        .s-section.closed .arr { transform: rotate(-90deg); }
+        .s-body { padding: 12px; border-top: 1px solid #2d3748; }
+        .s-section.closed .s-body { display: none; }
+
+        label { display: block; font-size: 8pt; font-weight: bold; color: #a0aec0; margin: 10px 0 3px; letter-spacing: 0.4px; }
+        label:first-child { margin-top: 0; }
+        input, textarea, select {
+            width: 100%; padding: 8px 10px;
+            background: #2d3748; border: 1px solid #4a5568; color: #fff;
+            border-radius: 6px; font-size: 9.5pt;
+        }
+        input:focus, textarea:focus, select:focus { outline: none; border-color: #63b3ed; background: #313e51; }
+
+        /* color swatch row */
+        .swatch-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+        .swatch {
+            width: 26px; height: 26px; border-radius: 5px; cursor: pointer;
+            border: 2px solid transparent; transition: transform 0.1s;
+        }
+        .swatch:hover { transform: scale(1.15); }
+        .swatch.active { border-color: #fff; }
+
+        /* action buttons */
+        .btn {
+            color: white; padding: 8px 12px; border: none; border-radius: 6px;
+            font-weight: bold; cursor: pointer; font-size: 8.5pt;
+        }
+        .btn:hover { filter: brightness(1.15); }
+        .btn-full { width: 100%; padding: 10px; font-size: 9pt; margin-bottom: 5px; }
+
+        /* entry card in sidebar */
+        .entry-card {
+            background: #232d3f; border: 1px solid #4a5568; border-radius: 6px;
+            padding: 10px; margin-bottom: 8px; position: relative;
+        }
+        .entry-card .ec-type { font-size: 7.5pt; color: #63b3ed; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px; }
+        .entry-card .ec-title { font-size: 9pt; color: #fff; font-weight: bold; }
+        .entry-card .ec-actions { display: flex; gap: 4px; margin-top: 8px; }
+        .ec-btn { padding: 3px 8px; border: none; border-radius: 4px; color: white; font-size: 7.5pt; font-weight: bold; cursor: pointer; }
+
+        /* ── PREVIEW DOCUMENT ── */
+        .program-doc {
+            width: 210mm;
+            background: white;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            font-family: Georgia, 'Times New Roman', serif;
+            overflow: hidden;
+        }
+
+        /* hero */
+        .prog-hero {
+            padding: 3rem 2rem 2.5rem;
+            text-align: center;
+            border-bottom: 3px solid #FAC775;
+        }
+        .prog-eyebrow {
+            font-family: Arial, sans-serif;
+            font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+            color: #FAC775; font-weight: 700; margin-bottom: 0.75rem;
+        }
+        .prog-title {
+            font-size: 40px; font-weight: 700; color: #ffffff; line-height: 1.1;
+        }
+        .prog-title span { color: #FAC775; }
+        .prog-sub {
+            font-family: Arial, sans-serif;
+            font-size: 13px; color: #a8c8e8; margin-top: 0.6rem; letter-spacing: 0.06em;
+        }
+        .prog-rule { width: 48px; height: 3px; background: #FAC775; margin: 1.25rem auto 0; border-radius: 2px; }
+
+        /* regular section row */
+        .prog-section {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 1.25rem; padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #1e4a72;
+            align-items: start;
+        }
+        .prog-section:nth-child(even) { background: #0d3059; }
+        .prog-tag {
+            font-family: Arial, sans-serif;
+            font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+            color: #FAC775; font-weight: 700; margin-bottom: 0.4rem;
+        }
+        .prog-ensemble { font-size: 16px; font-weight: 700; color: #ffffff; margin-bottom: 0.7rem; }
+        .prog-piece { margin-bottom: 0.45rem; }
+        .prog-piece-title { font-size: 13px; color: #d0e8f8; }
+        .prog-piece-composer { font-family: Arial, sans-serif; font-size: 11px; color: #7ab8e8; margin-top: 1px; }
+        .prog-right {
+            font-family: Arial, sans-serif;
+            font-size: 12px; line-height: 1.85; color: #a8c8e8; text-align: right;
+        }
+        .prog-right .prog-director { font-size: 12px; font-weight: 700; color: #FAC775; margin-bottom: 0.3rem; }
+
+        /* interval */
+        .prog-interval {
+            border-top: 2px solid #FAC775; border-bottom: 2px solid #FAC775;
+            padding: 1rem 1.5rem; display: flex; align-items: center; gap: 14px;
+        }
+        .prog-interval-badge {
+            font-family: Arial, sans-serif;
+            font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+            background: #FAC775; color: #061e36; font-weight: 700;
+            padding: 5px 12px; border-radius: 4px; white-space: nowrap;
+        }
+        .prog-interval-text {
+            font-family: Arial, sans-serif; font-size: 13px; color: #d0e8f8;
+        }
+        .prog-interval-text em { color: #FAC775; font-style: normal; font-weight: 700; }
+
+        /* half marker */
+        .prog-half-marker {
+            padding: 0.55rem 1.5rem; border-left: 4px solid #FAC775;
+        }
+        .prog-half-label {
+            font-family: Arial, sans-serif;
+            font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+            color: #FAC775; font-weight: 700;
+        }
+
+        /* finale */
+        .prog-finale {
+            border-top: 2px solid #FAC775;
+        }
+        .prog-finale .prog-ensemble { color: #ffffff; }
+
+        /* end banner */
+        .prog-end {
+            border-top: 3px solid #FAC775;
+            padding: 1.5rem;
+            display: flex; align-items: center; justify-content: center; gap: 16px;
+        }
+        .prog-end-rule { flex: 1; height: 1px; }
+        .prog-end-text {
+            font-family: Arial, sans-serif;
+            font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+            color: #FAC775; font-weight: 700;
+        }
+
+        /* ── PRINT ── */
+        @page {
+            margin: 0;  /* remove browser date/time/URL headers and footers */
+        }
+        @media print {
+            /* Reset body from flex/overflow:hidden so content flows */
+            body {
+                display: block !important;
+                height: auto !important;
+                overflow: visible !important;
+                background: white !important;
+            }
+            /* Hide all UI chrome */
+            .left-panel, .home-btn { display: none !important; }
+            /* Canvas fills page */
+            .right-panel {
+                display: block !important;
+                padding: 0 !important;
+                background: white !important;
+                overflow: visible !important;
+                height: auto !important;
+            }
+            .program-doc {
+                width: 100% !important;
+                box-shadow: none !important;
+            }
+            /* Force ALL background colours and text colours through */
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<a href="index.html" class="home-btn">🏠 Home</a>
+
+<!-- ══ LEFT PANEL ══════════════════════════════════════════════════════════ -->
+<div class="left-panel">
+
+    <!-- Show header config -->
+    <div class="s-section">
+        <div class="s-header" onclick="toggleS(this)">🎭 Show Header <span class="arr">▾</span></div>
+        <div class="s-body">
+            <label>Eyebrow Text (e.g. Semester 1 · 2026)</label>
+            <input type="text" id="cfgEyebrow" value="Semester 1 · 2026" oninput="render()">
+            <label>Main Title</label>
+            <input type="text" id="cfgTitle" value="Junior Showcase" oninput="render()">
+            <label>Title Highlight Word (gets gold colour)</label>
+            <input type="text" id="cfgHighlight" value="Showcase" oninput="render()">
+            <label>Subheading (e.g. Program of Events)</label>
+            <input type="text" id="cfgSub" value="Program of Events" oninput="render()">
+            <label>Colour Scheme</label>
+            <div class="swatch-row" id="swatchRow"></div>
+        </div>
+    </div>
+
+    <!-- Add entry -->
+    <div class="s-section">
+        <div class="s-header" onclick="toggleS(this)">➕ Add Entry <span class="arr">▾</span></div>
+        <div class="s-body">
+            <label>Entry Type</label>
+            <select id="entryType" onchange="toggleEntryFields()">
+                <option value="act">Performance Act</option>
+                <option value="interval">Interval</option>
+                <option value="half">Second Half Marker</option>
+            </select>
+
+            <div id="fieldAct">
+                <label>Tag (e.g. Year 9, Opening, Finale)</label>
+                <input type="text" id="fTag" placeholder="e.g. Year 9">
+                <label>Ensemble / Group Name</label>
+                <input type="text" id="fEnsemble" placeholder="e.g. Lovesick">
+                <label>Pieces (one per line: Title — Composer)</label>
+                <textarea id="fPieces" rows="3" placeholder="Sway — Bic Runga&#10;Another Song — Artist"></textarea>
+                <label>Right Column — Director or Performers (one per line)</label>
+                <textarea id="fRight" rows="3" placeholder="Director: Jason Wood&#10;or&#10;Jazmine Pagsinohin — Vocals"></textarea>
+                <label>Is this a Finale? (dark styling)</label>
+                <select id="fFinale">
+                    <option value="no">No</option>
+                    <option value="yes">Yes — apply finale styling</option>
+                </select>
+            </div>
+
+            <div id="fieldInterval" style="display:none;">
+                <label>Interval Label</label>
+                <input type="text" id="fIntervalLabel" value="Interval">
+                <label>Interval Description (e.g. ensemble performing)</label>
+                <input type="text" id="fIntervalDesc" placeholder="e.g. Junior Concert Band · Strike Force">
+            </div>
+
+            <button class="btn btn-full" style="background:#805ad5; margin-top:12px;" onclick="addEntry()">➕ Add to Program</button>
+        </div>
+    </div>
+
+    <!-- Entry list -->
+    <div class="s-section">
+        <div class="s-header" onclick="toggleS(this)">📝 Program Order <span class="arr">▾</span></div>
+        <div class="s-body" id="entryList">
+            <p style="font-size:8pt; color:#718096; font-style:italic;">No entries yet.</p>
+        </div>
+    </div>
+
+    <!-- Print -->
+    <div class="s-section">
+        <div class="s-header" onclick="toggleS(this)">🖨️ Print <span class="arr">▾</span></div>
+        <div class="s-body">
+            <p style="font-size:8pt; color:#718096; margin-bottom:10px;">The left panel hides automatically when printing. Use your browser's print dialog (Ctrl/Cmd+P) or the button below.</p>
+            <button class="btn btn-full" style="background:#38a169;" onclick="window.print()">🖨️ Print Program</button>
+        </div>
+    </div>
+
+    <!-- Cloud save -->
+    <div class="s-section">
+        <div class="s-header" onclick="toggleS(this)">☁️ Cloud Save / Load <span class="arr">▾</span></div>
+        <div class="s-body">
+            <label>Show Name</label>
+            <input type="text" id="projectName" placeholder="e.g. Junior Showcase 2026">
+            <div style="display:flex;gap:6px;margin-top:8px;">
+                <button class="btn" style="background:#2b6cb0;flex:1;" onclick="saveToServer()">☁️ Save</button>
+                <button class="btn" style="background:#805ad5;flex:1;" onclick="updateOnServer()">🔄 Update</button>
+            </div>
+            <label style="margin-top:12px;">Saved Programs</label>
+            <select id="projectSelector" size="3" style="height:auto;background:#2d3748;color:#fff;width:100%;border:1px solid #4a5568;border-radius:6px;padding:6px;margin-top:4px;">
+                <option disabled>— loading... —</option>
+            </select>
+            <div style="display:flex;gap:6px;margin-top:6px;">
+                <button class="btn" style="background:#38a169;flex:1;" onclick="loadFromServer()">📂 Open</button>
+                <button class="btn" style="background:#e53e3e;flex:1;" onclick="deleteFromServer()">🗑️ Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Local file -->
+    <div class="s-section">
+        <div class="s-header" onclick="toggleS(this)">💾 Local File <span class="arr">▾</span></div>
+        <div class="s-body" style="display:flex;gap:6px;">
+            <button class="btn" style="background:#4a5568;flex:1;" onclick="exportLocal()">💾 Export</button>
+            <button class="btn" style="background:#4a5568;flex:1;" onclick="document.getElementById('localIn').click()">📁 Import</button>
+            <input type="file" id="localIn" style="display:none;" accept=".json" onchange="importLocal(event)">
+        </div>
+    </div>
+
+</div>
+
+<!-- ══ RIGHT PANEL (PREVIEW) ════════════════════════════════════════════════ -->
+<div class="right-panel">
+    <div class="program-doc" id="programDoc"></div>
+</div>
+
+<script>
+    // ─── COLOUR SCHEMES ───────────────────────────────────────────────────
+    const SCHEMES = [
+        { name:'Navy & Gold',   hero:'#061e36', bg1:'#0a2a4a', bg2:'#0d3059', accent:'#FAC775', halfBg:'#1e4a72', finaleBg:'#1a1a3a', endBg:'#061e36', textPrimary:'#ffffff', textSub:'#a8c8e8', textBody:'#d0e8f8', textMuted:'#7ab8e8', divider:'#1e4a72' },
+        { name:'Burgundy & Cream', hero:'#1a0a0a', bg1:'#2a1010', bg2:'#331515', accent:'#e8c88a', halfBg:'#3d1a1a', finaleBg:'#1a1a0a', endBg:'#1a0a0a', textPrimary:'#fff8f0', textSub:'#c8a8a8', textBody:'#e8d8d0', textMuted:'#c09070', divider:'#3d2020' },
+        { name:'Forest & Sand',  hero:'#0a1a0a', bg1:'#0f2310', bg2:'#132816', accent:'#d4b870', halfBg:'#1a3520', finaleBg:'#0a180a', endBg:'#0a1a0a', textPrimary:'#f0f8f0', textSub:'#a8c8a8', textBody:'#d0e8d0', textMuted:'#80b080', divider:'#1a3520' },
+        { name:'Slate & Coral',  hero:'#0f1a24', bg1:'#152030', bg2:'#1a2838', accent:'#f08070', halfBg:'#1e3040', finaleBg:'#0f1820', endBg:'#0f1a24', textPrimary:'#ffffff', textSub:'#a0b8d0', textBody:'#c8dce8', textMuted:'#7090b0', divider:'#1e3040' },
+        { name:'Charcoal & Teal', hero:'#0d0d0d', bg1:'#141414', bg2:'#1a1a1a', accent:'#38b2ac', halfBg:'#1e2e2e', finaleBg:'#0a1212', endBg:'#0d0d0d', textPrimary:'#ffffff', textSub:'#a0c0c0', textBody:'#c0d8d8', textMuted:'#609090', divider:'#1e2e2e' },
+    ];
+    let activeScheme = 0;
+
+    // Build swatch picker
+    const swatchRow = document.getElementById('swatchRow');
+    SCHEMES.forEach((s, i) => {
+        const sw = document.createElement('div');
+        sw.className = 'swatch' + (i === 0 ? ' active' : '');
+        sw.style.background = `linear-gradient(135deg, ${s.hero} 50%, ${s.accent} 50%)`;
+        sw.title = s.name;
+        sw.onclick = () => {
+            document.querySelectorAll('.swatch').forEach(x => x.classList.remove('active'));
+            sw.classList.add('active');
+            activeScheme = i;
+            render();
+        };
+        swatchRow.appendChild(sw);
+    });
+
+    // ─── DATA ─────────────────────────────────────────────────────────────
+    let programDB = {
+        eyebrow: 'Semester 1 · 2026',
+        title: 'Junior Showcase',
+        highlight: 'Showcase',
+        sub: 'Program of Events',
+        scheme: 0,
+        entries: []
+    };
+
+    // ─── SECTION TOGGLE ───────────────────────────────────────────────────
+    function toggleS(hdr) { hdr.closest('.s-section').classList.toggle('closed'); }
+
+    function toggleEntryFields() {
+        const t = document.getElementById('entryType').value;
+        document.getElementById('fieldAct').style.display      = t === 'act'      ? 'block' : 'none';
+        document.getElementById('fieldInterval').style.display = t === 'interval' ? 'block' : 'none';
+    }
+
+    // ─── ADD ENTRY ────────────────────────────────────────────────────────
+    function addEntry() {
+        const type = document.getElementById('entryType').value;
+        let entry = { type };
+
+        if (type === 'act') {
+            const piecesRaw = document.getElementById('fPieces').value.trim();
+            const pieces = piecesRaw ? piecesRaw.split('\n').map(l => {
+                const [title, composer] = l.split('—').map(s => s.trim());
+                return { title: title || l, composer: composer || '' };
+            }) : [];
+            const rightRaw = document.getElementById('fRight').value.trim();
+            // Detect if first line starts with "Director:" for special styling
+            const rightLines = rightRaw ? rightRaw.split('\n').map(s => s.trim()).filter(Boolean) : [];
+            let directorLine = '';
+            let performerLines = [];
+            if (rightLines.length && rightLines[0].toLowerCase().startsWith('director')) {
+                directorLine = rightLines[0].replace(/^director[:\s]*/i, '').trim();
+                performerLines = rightLines.slice(1);
+            } else {
+                performerLines = rightLines;
+            }
+            entry = {
+                type, tag: document.getElementById('fTag').value.trim(),
+                ensemble: document.getElementById('fEnsemble').value.trim(),
+                pieces, directorLine, performerLines,
+                finale: document.getElementById('fFinale').value === 'yes'
+            };
+            // clear fields
+            document.getElementById('fTag').value = '';
+            document.getElementById('fEnsemble').value = '';
+            document.getElementById('fPieces').value = '';
+            document.getElementById('fRight').value = '';
+            document.getElementById('fFinale').value = 'no';
+        } else if (type === 'interval') {
+            entry = {
+                type,
+                label: document.getElementById('fIntervalLabel').value.trim() || 'Interval',
+                desc:  document.getElementById('fIntervalDesc').value.trim()
+            };
+            document.getElementById('fIntervalDesc').value = '';
+        }
+        // 'half' type has no extra fields
+
+        programDB.entries.push(entry);
+        syncHeaderToDB();
+        renderEntryList();
+        render();
+    }
+
+    function syncHeaderToDB() {
+        programDB.eyebrow   = document.getElementById('cfgEyebrow').value;
+        programDB.title     = document.getElementById('cfgTitle').value;
+        programDB.highlight = document.getElementById('cfgHighlight').value;
+        programDB.sub       = document.getElementById('cfgSub').value;
+        programDB.scheme    = activeScheme;
+    }
+
+    // ─── ENTRY LIST SIDEBAR ───────────────────────────────────────────────
+    function renderEntryList() {
+        const el = document.getElementById('entryList');
+        if (!programDB.entries.length) {
+            el.innerHTML = '<p style="font-size:8pt;color:#718096;font-style:italic;">No entries yet.</p>';
+            return;
+        }
+        el.innerHTML = programDB.entries.map((e, i) => {
+            const label = e.type === 'act' ? (e.ensemble || '[Act]') :
+                          e.type === 'interval' ? '— Interval —' : '— Second Half —';
+            const typeTag = e.type === 'act' ? (e.finale ? 'Finale' : 'Act') :
+                            e.type === 'interval' ? 'Interval' : 'Half Marker';
+            return `<div class="entry-card">
+                <div class="ec-type">${typeTag}</div>
+                <div class="ec-title">${label}</div>
+                <div class="ec-actions">
+                    <button class="ec-btn" style="background:#2b6cb0;" onclick="moveEntry(${i},-1)">▲</button>
+                    <button class="ec-btn" style="background:#2b6cb0;" onclick="moveEntry(${i}, 1)">▼</button>
+                    <button class="ec-btn" style="background:#e53e3e;" onclick="removeEntry(${i})">✕ Remove</button>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    function moveEntry(i, dir) {
+        const t = i + dir;
+        if (t < 0 || t >= programDB.entries.length) return;
+        [programDB.entries[i], programDB.entries[t]] = [programDB.entries[t], programDB.entries[i]];
+        renderEntryList(); render();
+    }
+    function removeEntry(i) {
+        programDB.entries.splice(i, 1);
+        renderEntryList(); render();
+    }
+
+    // ─── RENDER PROGRAM DOC ───────────────────────────────────────────────
+    function render() {
+        syncHeaderToDB();
+        const s = SCHEMES[activeScheme];
+        const { eyebrow, title, highlight, sub, entries } = programDB;
+
+        // Build highlighted title
+        const safeTitle = title.replace(highlight, `<span style="color:${s.accent}">${highlight}</span>`);
+
+        // Apply dynamic CSS vars via injected style tag
+        let styleTag = document.getElementById('dynStyle');
+        if (!styleTag) { styleTag = document.createElement('style'); styleTag.id = 'dynStyle'; document.head.appendChild(styleTag); }
+        styleTag.textContent = `
+            /* Force colour printing in all browsers */
+            .program-doc * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            .prog-hero  { background: ${s.hero} !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .prog-eyebrow { color: ${s.accent} !important; }
+            .prog-title   { color: ${s.textPrimary} !important; }
+            .prog-sub     { color: ${s.textSub} !important; }
+            .prog-rule    { background: ${s.accent} !important; }
+            .prog-section { background: ${s.bg1} !important; border-bottom-color: ${s.divider} !important; color: ${s.textBody} !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .prog-section:nth-child(even) { background: ${s.bg2} !important; }
+            .prog-tag     { color: ${s.accent} !important; }
+            .prog-ensemble { color: ${s.textPrimary} !important; }
+            .prog-piece-title { color: ${s.textBody} !important; }
+            .prog-piece-composer { color: ${s.textMuted} !important; }
+            .prog-right   { color: ${s.textSub} !important; }
+            .prog-director { color: ${s.accent} !important; }
+            .prog-interval { background: ${s.hero} !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .prog-interval-badge { background: ${s.accent} !important; color: ${s.hero} !important; }
+            .prog-interval-text  { color: ${s.textBody} !important; }
+            .prog-interval-text em { color: ${s.accent} !important; }
+            .prog-half-marker { background: ${s.halfBg} !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .prog-half-label  { color: ${s.accent} !important; }
+            .prog-finale { background: ${s.finaleBg} !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .prog-end   { background: ${s.endBg} !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .prog-end-rule { background: ${s.divider} !important; }
+            .prog-end-text { color: ${s.accent} !important; }
+        `;
+
+        let html = `
+            <div class="prog-hero">
+                <p class="prog-eyebrow">${eyebrow}</p>
+                <h1 class="prog-title">${safeTitle}</h1>
+                <p class="prog-sub">${sub}</p>
+                <div class="prog-rule"></div>
+            </div>`;
+
+        entries.forEach(e => {
+            if (e.type === 'half') {
+                html += `<div class="prog-half-marker"><p class="prog-half-label">Second Half</p></div>`;
+            } else if (e.type === 'interval') {
+                html += `<div class="prog-interval">
+                    <span class="prog-interval-badge">${e.label}</span>
+                    <span class="prog-interval-text"><em>${e.desc}</em></span>
+                </div>`;
+            } else {
+                // act
+                const rightHtml = e.directorLine
+                    ? `<p class="prog-director">Directed by ${e.directorLine}</p>` + e.performerLines.map(p => `<p>${p}</p>`).join('')
+                    : e.performerLines.map(p => `<p>${p}</p>`).join('');
+                const piecesHtml = (e.pieces||[]).map(p => `
+                    <div class="prog-piece">
+                        <p class="prog-piece-title">${p.title}</p>
+                        ${p.composer ? `<p class="prog-piece-composer">${p.composer}</p>` : ''}
+                    </div>`).join('');
+                html += `<div class="prog-section${e.finale ? ' prog-finale' : ''}">
+                    <div>
+                        <p class="prog-tag">${e.tag || ''}</p>
+                        <p class="prog-ensemble">${e.ensemble || ''}</p>
+                        ${piecesHtml}
+                    </div>
+                    <div class="prog-right">${rightHtml}</div>
+                </div>`;
+            }
+        });
+
+        html += `<div class="prog-end">
+            <div class="prog-end-rule"></div>
+            <p class="prog-end-text">End of Showcase</p>
+            <div class="prog-end-rule"></div>
+        </div>`;
+
+        document.getElementById('programDoc').innerHTML = html;
+    }
+
+    // ─── SERVER PERSISTENCE ───────────────────────────────────────────────
+    const APP_TYPE = 'program';
+    let currentProjectId = null;
+
+    async function fetchProjectList() {
+        try {
+            const res = await fetch(`/api/projects?app_type=${APP_TYPE}`);
+            const projects = await res.json();
+            const sel = document.getElementById('projectSelector');
+            sel.innerHTML = projects.length
+                ? projects.map(p => `<option value="${p.id}">${p.name}</option>`).join('')
+                : '<option disabled>No saved programs yet</option>';
+        } catch(e) { console.warn('Server unreachable'); }
+    }
+
+    async function saveToServer() {
+        syncHeaderToDB();
+        const name = document.getElementById('projectName').value.trim();
+        if (!name) return alert('Enter a program name first.');
+        try {
+            const res = await fetch('/api/projects', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ app_type: APP_TYPE, name, payload: programDB }) });
+            const data = await res.json();
+            currentProjectId = data.id;
+            alert(`✅ Saved as "${name}"`);
+            fetchProjectList();
+        } catch(e) { alert('Save failed: ' + e.message); }
+    }
+
+    async function updateOnServer() {
+        syncHeaderToDB();
+        if (!currentProjectId) return alert('No program open — use ☁️ Save first.');
+        try {
+            await fetch(`/api/projects/${currentProjectId}`, { method:'PUT', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ name: document.getElementById('projectName').value.trim()||undefined, payload: programDB }) });
+            alert('✅ Program updated!');
+        } catch(e) { alert('Update failed: ' + e.message); }
+    }
+
+    async function loadFromServer() {
+        const id = document.getElementById('projectSelector').value;
+        if (!id) return alert('Select a program from the list.');
+        try {
+            const res = await fetch(`/api/projects/${id}`);
+            const project = await res.json();
+            loadProgramDB(project.payload);
+            currentProjectId = project.id;
+            document.getElementById('projectName').value = project.name;
+            alert(`📂 Loaded "${project.name}"`);
+        } catch(e) { alert('Load failed: ' + e.message); }
+    }
+
+    async function deleteFromServer() {
+        const id = document.getElementById('projectSelector').value;
+        if (!id) return alert('Select a program to delete.');
+        if (!confirm('Delete this program permanently?')) return;
+        try {
+            await fetch(`/api/projects/${id}`, { method:'DELETE' });
+            if (currentProjectId === Number(id)) currentProjectId = null;
+            fetchProjectList();
+        } catch(e) { alert('Delete failed: ' + e.message); }
+    }
+
+    // ─── LOCAL FILE ───────────────────────────────────────────────────────
+    function exportLocal() {
+        syncHeaderToDB();
+        const blob = new Blob([JSON.stringify(programDB, null, 2)], { type:'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a'); a.href = url; a.download = 'audience_program.json'; a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    function importLocal(event) {
+        const reader = new FileReader();
+        reader.onload = e => {
+            try {
+                const parsed = JSON.parse(e.target.result);
+                loadProgramDB(parsed);
+            } catch { alert('Could not parse the JSON file.'); }
+        };
+        reader.readAsText(event.target.files[0]);
+    }
+
+    function loadProgramDB(data) {
+        programDB = data;
+        activeScheme = data.scheme || 0;
+        document.getElementById('cfgEyebrow').value   = data.eyebrow   || '';
+        document.getElementById('cfgTitle').value     = data.title     || '';
+        document.getElementById('cfgHighlight').value = data.highlight || '';
+        document.getElementById('cfgSub').value       = data.sub       || '';
+        document.querySelectorAll('.swatch').forEach((sw, i) => sw.classList.toggle('active', i === activeScheme));
+        renderEntryList();
+        render();
+    }
+
+    // ─── INIT ─────────────────────────────────────────────────────────────
+    fetchProjectList();
+    render();
+
+    // Wire up header inputs to re-render live
+    ['cfgEyebrow','cfgTitle','cfgHighlight','cfgSub'].forEach(id =>
+        document.getElementById(id).addEventListener('input', render)
+    );
+</script>
+</body>
+</html>

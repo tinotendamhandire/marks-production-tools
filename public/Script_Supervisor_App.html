@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dynamic Master Script Live Editor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            height: 100vh;
+            background-color: #1a202c;
+            color: #fff;
+            overflow: hidden;
+        }
+        .panel {
+            width: 50%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+        }
+        .left-input {
+            border-right: 2px solid #4a5568;
+            background-color: #2d3748;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .right-preview {
+            background-color: #ffffff;
+            color: #000000;
+            padding: 50px;
+            overflow-y: auto;
+        }
+        h3 {
+            margin-top: 0;
+            color: #63b3ed;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 12pt;
+        }
+        .meta-config {
+            background: #1a202c;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border-left: 4px solid #4299e1;
+        }
+        .element-card {
+            background: #232d3f;
+            padding: 12px;
+            margin-top: 15px;
+            border-radius: 4px;
+            border: 1px dashed #4a5568;
+            position: relative;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 8px;
+            margin-bottom: 2px;
+            font-size: 8.5pt;
+            color: #cbd5e0;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            background-color: #1a202c;
+            border: 1px solid #4a5568;
+            color: #fff;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 9.5pt;
+        }
+        .btn-group {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .btn {
+            color: white;
+            padding: 8px 10px;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 8.5pt;
+            text-align: center;
+        }
+        .btn-scene { background-color: #805ad5; }
+        .btn-dialogue { background-color: #3182ce; }
+        .btn-action { background-color: #dd6b20; }
+        .btn-delete { 
+            background-color: #e53e3e; 
+            padding: 4px 8px;
+            font-size: 8pt;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        .btn-delete:hover { background-color: #c53030; }
+        .print-btn {
+            background-color: #38a169;
+            color: white;
+            padding: 14px;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 25px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 10pt;
+        }
+        .print-btn:hover { background-color: #2f855a; }
+
+        /* Hollywood Layout Preview Rules & Forced Title Page Break */
+        .preview-body {
+            font-family: 'Courier New', Courier, monospace;
+            line-height: 1.5;
+            font-size: 11pt;
+            color: #000;
+        }
+        .preview-body .title-page {
+            text-align: center;
+            padding-top: 80mm;
+            box-sizing: border-box;
+            break-after: page;
+            page-break-after: always;
+        }
+        .preview-body .title-page h1 {
+            font-size: 28pt;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .preview-body .title-page h2 {
+            font-size: 18pt;
+            font-weight: normal;
+            margin-bottom: 30mm;
+            color: #4a5568;
+        }
+        .script-act {
+            text-align: center;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-decoration: underline;
+            margin-top: 35px;
+            margin-bottom: 20px;
+            break-after: avoid;
+            page-break-after: avoid;
+        }
+        .script-character {
+            text-align: center;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-top: 15px;
+            margin-bottom: 2px;
+            width: 100%;
+            break-after: avoid;
+            page-break-after: avoid;
+        }
+        .script-dialogue {
+            margin-left: 20%;
+            margin-right: 20%;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        .script-action {
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+        .script-perf-block {
+            background-color: #f7fafc;
+            border: 1px dashed #718096;
+            padding: 8px;
+            margin: 20px 0;
+            text-align: center;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        /* Script Hardware Counter Setup */
+        @page {
+            size: A4 portrait;
+            margin: 20mm 20mm;
+            @bottom-right {
+                content: "Page " counter(page) " of " counter(pages);
+                font-family: 'Courier New', Courier, monospace;
+                font-size: 10pt;
+                color: #000;
+            }
+        }
+        @media print {
+            .left-input { display: none !important; }
+            .right-preview { 
+                width: 100% !important; 
+                padding: 0 !important; 
+                overflow: visible !important; 
+                height: auto !important;
+            }
+            body { background: white; overflow: visible !important; }
+        }
+    </style>
+</head>
+<body>
+<a href="index.html" style="
+    position: fixed; top: 14px; right: 16px; z-index: 9999;
+    background: #2d3748; color: #a0aec0;
+    border: 1px solid #4a5568; border-radius: 7px;
+    padding: 6px 13px; font-size: 8.5pt; font-weight: bold;
+    text-decoration: none; font-family: Arial, sans-serif;
+    display: flex; align-items: center; gap: 6px;
+    transition: background 0.15s, color 0.15s;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);"
+    onmouseover="this.style.background='#4a5568';this.style.color='#fff'"
+    onmouseout="this.style.background='#2d3748';this.style.color='#a0aec0'">
+    🏠 Home
+</a>
+
+    <div class="panel left-input">
+        <h3>Showcase Script Element Editor</h3>
+        
+        <div class="meta-config">
+            <label>Showcase Production Title</label>
+            <input type="text" id="scriptTitle" value="Senior Showcase 2026" oninput="renderScriptOutput()">
+            <label>Subheading / Institution Name</label>
+            <input type="text" id="scriptSub" value="Ellenbrook Secondary College" oninput="renderScriptOutput()">
+        </div>
+
+        <hr style="border: 0; border-top: 1px solid #4a5568; margin: 15px 0;">
+        <div id="elementsStack"></div>
+
+        <h4 style="margin-bottom: 5px; color:#cbd5e0; font-size:10pt; text-transform:uppercase;">Add Script Block Element:</h4>
+        <div class="btn-group">
+            <button class="btn btn-scene" onclick="addElement('act')">🎬 Act Header</button>
+            <button class="btn btn-dialogue" onclick="addElement('dialogue')">💬 Speech</button>
+            <button class="btn btn-action" onclick="addElement('action')">🏃 Stage Dir.</button>
+        </div>
+        <button class="print-btn" onclick="window.print()">Print Script / Save PDF</button>
+        <h3>Local File</h3>
+<div style="display:flex; gap:8px; margin-top:5px; margin-bottom:15px;">
+    <button style="background:#4a5568; flex:1; border:none; padding:10px; color:white; border-radius:6px; font-weight:bold; cursor:pointer;" onclick="exportLocalFile()">💾 Export JSON</button>
+    <button style="background:#4a5568; flex:1; border:none; padding:10px; color:white; border-radius:6px; font-weight:bold; cursor:pointer;" onclick="document.getElementById('localFileInput').click()">📁 Import JSON</button>
+    <input type="file" id="localFileInput" style="display:none;" accept=".json" onchange="importLocalFile(event)">
+</div>
+
+        <h3>Cloud Save / Load</h3>
+<div class="config-box" style="background:#1a202c; padding:12px; border-radius:8px; border:1px solid #2d3748; margin-top:10px;">
+    <label>Show Name</label>
+    <input type="text" id="projectName" placeholder="e.g. Senior Showcase Script">
+    <div style="display:flex; gap:8px; margin-top:10px;">
+        <button style="background:#2b6cb0; flex:1; border:none; padding:10px; color:white; border-radius:6px; font-weight:bold; cursor:pointer;" onclick="saveToServer()">☁️ Save</button>
+        <button style="background:#805ad5; flex:1; border:none; padding:10px; color:white; border-radius:6px; font-weight:bold; cursor:pointer;" onclick="updateOnServer()">🔄 Update</button>
+    </div>
+    <label style="margin-top:12px;">Saved Scripts</label>
+    <select id="projectSelector" size="4" style="width:100%; height:auto; background:#2d3748; border:1px solid #4a5568; color:#fff; border-radius:6px; padding:6px;">
+        <option disabled>— loading... —</option>
+    </select>
+    <div style="display:flex; gap:8px; margin-top:8px;">
+        <button style="background:#38a169; flex:1; border:none; padding:10px; color:white; border-radius:6px; font-weight:bold; cursor:pointer;" onclick="loadFromServer()">📂 Open</button>
+        <button style="background:#e53e3e; flex:1; border:none; padding:10px; color:white; border-radius:6px; font-weight:bold; cursor:pointer;" onclick="deleteFromServer()">🗑️ Delete</button>
+    </div>
+</div>
+    </div>
+
+
+    <div class="panel right-preview preview-body" id="scriptPreview"></div>
+
+    <script>
+
+        // ─── LOCAL FILE (backup option) ───────────────────────────────────
+        function exportLocalFile() {
+            const blob = new Blob([JSON.stringify(scriptDB, null, 2)], { type: 'application/json' });
+            const url  = URL.createObjectURL(blob);
+            const a    = document.createElement('a');
+            a.href = url; a.download = 'script_backup.json'; a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function importLocalFile(event) {
+            const reader = new FileReader();
+            reader.onload = e => {
+                try {
+                    const parsed = JSON.parse(e.target.result);
+                    if (!Array.isArray(parsed)) return alert('Invalid file.');
+                    scriptDB = parsed;
+                    syncControlPanelWorkspace();
+                    renderScriptOutput();
+                } catch { alert('Could not parse the JSON file.'); }
+            };
+            reader.readAsText(event.target.files[0]);
+        }
+
+        // ─── SERVER PERSISTENCE ──────────────────────────────────────────
+        const APP_TYPE = 'script';
+        let currentProjectId = null;
+
+        async function fetchProjectList() {
+            try {
+                const res = await fetch(`/api/projects?app_type=${APP_TYPE}`);
+                const projects = await res.json();
+                const sel = document.getElementById('projectSelector');
+                sel.innerHTML = projects.length
+                    ? projects.map(p => `<option value="${p.id}">${p.name}</option>`).join('')
+                    : '<option disabled>No saved scripts yet</option>';
+            } catch (e) { console.error('Failed to load project list:', e); }
+        }
+
+        async function saveToServer() {
+            const name = document.getElementById('projectName').value.trim();
+            if (!name) return alert('Please enter a script name before saving.');
+            try {
+                const res = await fetch('/api/projects', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ app_type: APP_TYPE, name, payload: scriptDB })
+                });
+                const data = await res.json();
+                currentProjectId = data.id;
+                alert(`✅ Saved as "${name}"`);
+                fetchProjectList();
+            } catch (e) { alert('Save failed: ' + e.message); }
+        }
+
+        async function updateOnServer() {
+            if (!currentProjectId) return alert('No script is open — use "Save" first.');
+            const name = document.getElementById('projectName').value.trim() || undefined;
+            try {
+                await fetch(`/api/projects/${currentProjectId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, payload: scriptDB })
+                });
+                alert('✅ Script updated!');
+            } catch (e) { alert('Update failed: ' + e.message); }
+        }
+
+        async function loadFromServer() {
+            const sel = document.getElementById('projectSelector');
+            const id = sel.value;
+            if (!id) return alert('Select a script from the list first.');
+            try {
+                const res = await fetch(`/api/projects/${id}`);
+                const project = await res.json();
+                scriptDB = project.payload;         // overwrite the master array
+                currentProjectId = project.id;
+                document.getElementById('projectName').value = project.name;
+                // Trigger both repaint functions (control panel + preview)
+                syncControlPanelWorkspace();
+                renderScriptOutput();
+                alert(`📂 Loaded "${project.name}"`);
+            } catch (e) { alert('Load failed: ' + e.message); }
+        }
+
+        async function deleteFromServer() {
+            const sel = document.getElementById('projectSelector');
+            const id = sel.value;
+            if (!id) return alert('Select a script to delete.');
+            if (!confirm('Delete this script permanently?')) return;
+            try {
+                await fetch(`/api/projects/${id}`, { method: 'DELETE' });
+                if (currentProjectId === Number(id)) currentProjectId = null;
+                fetchProjectList();
+            } catch (e) { alert('Delete failed: ' + e.message); }
+        }
+
+        fetchProjectList();
+
+        let scriptDB = [
+            { type: "act", value: "Act I" },
+            { type: "dialogue", character: "Stella Coskun", lines: "Good evening ladies and gentlemen. Welcome to our show." },
+            { type: "action", value: "(The MCs walk out onto the center stage mic array.)" }
+        ];
+
+        function syncControlPanelWorkspace() {
+            const container = document.getElementById('elementsStack');
+            container.innerHTML = '';
+
+            scriptDB.forEach((element, idx) => {
+                const card = document.createElement('div');
+                card.className = 'element-card';
+                let innerContent = `<button class="btn btn-delete" onclick="deleteElement(${idx})">❌ Remove</button>`;
+
+                if (element.type === 'act') {
+                    innerContent += `
+                        <label style="color:#b794f4;">🎬 Act Header / Break</label>
+                        <input type="text" value="${element.value}" oninput="scriptDB[${idx}].value = this.value; renderScriptOutput();">
+                    `;
+                } else if (element.type === 'action') {
+                    innerContent += `
+                        <label style="color:#f6ad55;">🏃 Stage Action Cue</label>
+                        <textarea rows="2" oninput="scriptDB[${idx}].value = this.value; renderScriptOutput();">${element.value}</textarea>
+                    `;
+                } else if (element.type === 'dialogue') {
+                    innerContent += `
+                        <label style="color:#63b3ed;">👤 Character Name</label>
+                        <input type="text" value="${element.character}" oninput="scriptDB[${idx}].character = this.value; renderScriptOutput();" style="text-transform: uppercase; font-weight: bold;">
+                        <label>Spoken Lines</label>
+                        <textarea rows="3" oninput="scriptDB[${idx}].lines = this.value; renderScriptOutput();">${element.lines}</textarea>
+                    `;
+                }
+                card.innerHTML = innerContent;
+                container.appendChild(card);
+            });
+        }
+
+        function renderScriptOutput() {
+            const masterTitle = document.getElementById('scriptTitle').value;
+            const subTitle = document.getElementById('scriptSub').value;
+            const previewArea = document.getElementById('scriptPreview');
+
+            let scriptHTML = `
+                <div class="title-page">
+                    <h1>${masterTitle}</h1>
+                    <h2>Master Production Script</h2>
+                    <div style="font-size:11pt; line-height:1.8; margin-top:30px;">
+                        <strong>Institution:</strong> ${subTitle}<br>
+                        <em>Official Performance Copy</em>
+                    </div>
+                </div>
+            `;
+
+            scriptDB.forEach((element) => {
+                if (element.type === 'act') {
+                    if (element.value.toLowerCase().includes('performance') || element.value.toLowerCase().includes('interval')) {
+                        scriptHTML += `<div class="script-perf-block">${element.value}</div>`;
+                    } else {
+                        scriptHTML += `<div class="script-act">${element.value}</div>`;
+                    }
+                } else if (element.type === 'action') {
+                    let formattedAction = element.value.trim();
+                    if (formattedAction && !formattedAction.startsWith('(')) formattedAction = '(' + formattedAction;
+                    if (formattedAction && !formattedAction.endsWith(')')) formattedAction = formattedAction + ')';
+                    scriptHTML += `<div class="script-action">${formattedAction}</div>`;
+                } else if (element.type === 'dialogue') {
+                    scriptHTML += `
+                        <div class="script-character">${element.character}</div>
+                        <div class="script-dialogue">${element.lines}</div>
+                    `;
+                }
+            });
+            previewArea.innerHTML = scriptHTML;
+        }
+
+        function addElement(elementType) {
+            if (elementType === 'act') scriptDB.push({ type: "act", value: "NEW SECTION" });
+            else if (elementType === 'action') scriptDB.push({ type: "action", value: "(Stage direction note)" });
+            else if (elementType === 'dialogue') scriptDB.push({ type: "dialogue", character: "CHARACTER", lines: "Lines." });
+            syncControlPanelWorkspace();
+            renderScriptOutput();
+        }
+        window.deleteElement = function(idx) {
+            scriptDB.splice(idx, 1);
+            syncControlPanelWorkspace();
+            renderScriptOutput();
+        }
+
+        syncControlPanelWorkspace();
+        renderScriptOutput();
+    </script>
+</body>
+</html>

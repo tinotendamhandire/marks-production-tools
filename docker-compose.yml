@@ -1,0 +1,31 @@
+services:
+
+  app:
+    build: .
+    ports:
+      - "3000:3000"         # access at http://raspberrypi.local:3000
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgres://marks:marks@db:5432/marks_tools
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped  # auto-restarts if it crashes or Pi reboots
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: marks
+      POSTGRES_PASSWORD: marks
+      POSTGRES_DB: marks_tools
+    volumes:
+      - postgres_data:/var/lib/postgresql/data   # data survives container restarts
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U marks -d marks_tools"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+volumes:
+  postgres_data:   # named volume — Docker manages it, survives reboots

@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Automated Time-Calculating Run Sheet Editor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            height: 100vh;
+            background-color: #1a202c;
+            color: #fff;
+            overflow: hidden;
+        }
+        .panel {
+            width: 50%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+        }
+        .left-input {
+            border-right: 2px solid #4a5568;
+            background-color: #2d3748;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .right-preview {
+            background-color: #ffffff;
+            color: #2d3748;
+            padding: 40px;
+            overflow-y: auto;
+        }
+        h3 {
+            margin-top: 20px;
+            margin-bottom: 8px;
+            color: #63b3ed;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 10pt;
+            border-bottom: 1px solid #4a5568;
+            padding-bottom: 5px;
+        }
+        h3:first-of-type { margin-top: 0; }
+        .global-config {
+            background: #1a202c;
+            padding: 15px;
+            border: 1px solid #4a5568;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+        .act-config-block {
+            background: #1a202c;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+            border-left: 4px solid #4299e1;
+            position: relative;
+        }
+        .item-row-inputs {
+            background: #232d3f;
+            padding: 12px;
+            margin-top: 12px;
+            border-radius: 4px;
+            border: 1px dashed #4a5568;
+            position: relative;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+            margin-bottom: 2px;
+            font-size: 8.5pt;
+            color: #cbd5e0;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 8px;
+            background-color: #1a202c;
+            border: 1px solid #4a5568;
+            color: #fff;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 9.5pt;
+        }
+        input:focus, textarea:focus, select:focus { outline: none; border-color: #63b3ed; }
+        .btn {
+            color: white;
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 8.5pt;
+            margin-top: 10px;
+            margin-right: 5px;
+        }
+        .btn:hover { filter: brightness(1.15); }
+        .btn-add  { background-color: #38a169; }
+        .btn-act  { background-color: #805ad5; padding: 12px; font-size: 10pt; width: 100%; display: block; margin-right: 0; }
+        .btn-delete { background-color: #e53e3e; padding: 4px 8px; font-size: 8pt; float: right; margin-top: 0; }
+        .print-btn {
+            background-color: #3182ce;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 10pt;
+        }
+        .print-btn:hover { background-color: #2b6cb0; }
+        .save-box {
+            background: #1a202c;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #4a5568;
+            margin-bottom: 10px;
+        }
+        .save-box label { margin-top: 6px; }
+        .save-box label:first-of-type { margin-top: 0; }
+
+        /* Preview / document styles */
+        .preview-body h1 {
+            color: #1a365d;
+            font-size: 22pt;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+            border-bottom: 3px solid #1a365d;
+            padding-bottom: 8px;
+            margin-top: 0;
+        }
+        .preview-body h2 {
+            color: #2b6cb0;
+            font-size: 14pt;
+            margin-top: 25px;
+            margin-bottom: 8px;
+            border-left: 4px solid #2b6cb0;
+            padding-left: 8px;
+            text-transform: uppercase;
+        }
+        .preview-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        .preview-table th {
+            background-color: #1a365d;
+            color: white;
+            font-weight: bold;
+            text-align: left;
+            padding: 8px;
+            font-size: 9.5pt;
+            text-transform: uppercase;
+        }
+        .preview-table td {
+            padding: 8px;
+            border: 1px solid #e2e8f0;
+            vertical-align: top;
+            font-size: 9.5pt;
+            color: #2d3748;
+        }
+        .preview-table tr:nth-child(even) td { background-color: #f7fafc; }
+        .bold-blue { font-weight: bold; color: #2b6cb0; }
+
+        @media print {
+            .left-input { display: none !important; }
+            .right-preview { width: 100% !important; padding: 20px !important; }
+            body { background: white; overflow: visible; }
+        }
+    </style>
+</head>
+<body>
+<a href="index.html" style="
+    position: fixed; top: 14px; right: 16px; z-index: 9999;
+    background: #2d3748; color: #a0aec0;
+    border: 1px solid #4a5568; border-radius: 7px;
+    padding: 6px 13px; font-size: 8.5pt; font-weight: bold;
+    text-decoration: none; font-family: Arial, sans-serif;
+    display: flex; align-items: center; gap: 6px;
+    transition: background 0.15s, color 0.15s;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);"
+    onmouseover="this.style.background='#4a5568';this.style.color='#fff'"
+    onmouseout="this.style.background='#2d3748';this.style.color='#a0aec0'">
+    🏠 Home
+</a>
+
+    <div class="panel left-input">
+        <h3>Show Configuration</h3>
+        <div class="global-config">
+            <label>Master Show Title</label>
+            <input type="text" id="showTitle" value="Senior Showcase 2026" oninput="renderRunSheet()">
+            <label>Subheading / Roster Info</label>
+            <input type="text" id="showSub" value="Ellenbrook Secondary College" oninput="renderRunSheet()">
+            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                <div style="width: 50%;">
+                    <label>Show Start Time</label>
+                    <input type="text" id="startTime" value="7:00" oninput="renderRunSheet()">
+                </div>
+                <div style="width: 50%;">
+                    <label>AM / PM</label>
+                    <select id="startPeriod" onchange="renderRunSheet()">
+                        <option value="PM" selected>PM</option>
+                        <option value="AM">AM</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <hr style="border: 0; border-top: 1px solid #4a5568; margin: 5px 0 15px 0;">
+        <div id="actsContainer"></div>
+        <button class="btn btn-act" onclick="addNewAct()">➕ Add New Act Section</button>
+
+        <h3>Print</h3>
+        <button class="print-btn" onclick="window.print()">🖨️ Print / Save PDF</button>
+
+        <h3>Cloud Save / Load</h3>
+        <div class="save-box">
+            <label>Show Name</label>
+            <input type="text" id="projectName" placeholder="e.g. Showcase Night 1">
+            <div style="display:flex; gap:8px; margin-top:10px;">
+                <button class="btn" style="background:#2b6cb0; flex:1; margin:0;" onclick="saveToServer()">☁️ Save</button>
+                <button class="btn" style="background:#805ad5; flex:1; margin:0;" onclick="updateOnServer()">🔄 Update</button>
+            </div>
+        </div>
+        <div class="save-box">
+            <label>Saved Shows</label>
+            <select id="projectSelector" size="4" style="height:auto; background:#2d3748; margin-top:4px;">
+                <option disabled>— loading... —</option>
+            </select>
+            <div style="display:flex; gap:8px; margin-top:8px;">
+                <button class="btn" style="background:#38a169; flex:1; margin:0;" onclick="loadFromServer()">📂 Open</button>
+                <button class="btn" style="background:#e53e3e; flex:1; margin:0;" onclick="deleteFromServer()">🗑️ Delete</button>
+            </div>
+        </div>
+
+        <h3>Local File</h3>
+        <div class="save-box" style="display:flex; gap:8px;">
+            <button class="btn" style="background:#4a5568; flex:1; margin:0;" onclick="exportLocalFile()">💾 Export JSON</button>
+            <button class="btn" style="background:#4a5568; flex:1; margin:0;" onclick="document.getElementById('localFileInput').click()">📁 Import JSON</button>
+            <input type="file" id="localFileInput" style="display:none;" accept=".json" onchange="importLocalFile(event)">
+        </div>
+    </div>
+
+    <div class="panel right-preview preview-body" id="previewArea"></div>
+
+    <script>
+        // ─── DATA ─────────────────────────────────────────────────────────
+        let database = [
+            {
+                actTitle: "Act I",
+                items: [
+                    { duration: 9,  ensemble: "Senior Concert Band",    note: "Set up opening configurations. Medley: Disney Around the Bandroom & Silent Movie.", mic: "Stage Layout" },
+                    { duration: 6,  ensemble: "Senior Strings Ensemble", note: "Featuring Katie, David P, and Aceline. Plays Dramatic Essay & Dragonborn.",          mic: "Piano & Overheads" },
+                    { duration: 8,  ensemble: "Cert III Band",           note: "Roll out amplifiers. The Strokes: Modern Age & Trying Your Luck.",                    mic: "1x Vox, Instruments" }
+                ]
+            },
+            {
+                actTitle: "Intermission",
+                items: [
+                    { duration: 20, ensemble: "Interval & P&C Raffles", note: "Audience foyer break. Jazz Band loads onto stage 5 mins before second half begins.", mic: "House Music" }
+                ]
+            },
+            {
+                actTitle: "Act II",
+                items: [
+                    { duration: 10, ensemble: "Jazz Band Set",           note: "Sweet Caroline early intro hook to pull crowd back into seats, followed by main set.", mic: "Big Band Profile" },
+                    { duration: 8,  ensemble: "Senior Guitar Ensemble",  note: "Acoustic tracking mode. Request total silence inside auditorium.",                      mic: "Sensitive Arrays" }
+                ]
+            }
+        ];
+
+        // ─── CONTROL PANEL RENDER ─────────────────────────────────────────
+        function updateAppWorkspace() {
+            const container = document.getElementById('actsContainer');
+            container.innerHTML = '';
+            database.forEach((act, actIdx) => {
+                const actBlock = document.createElement('div');
+                actBlock.className = 'act-config-block';
+                let rowsHtml = '';
+                act.items.forEach((item, itemIdx) => {
+                    rowsHtml += `
+                        <div class="item-row-inputs">
+                            <button class="btn btn-delete" onclick="removeRowFromAct(${actIdx}, ${itemIdx})">❌ Remove</button>
+                            <div style="display:flex; gap:5px; margin-top:15px;">
+                                <div style="width:30%;">
+                                    <label>Mins</label>
+                                    <input type="number" min="0" value="${item.duration}" oninput="database[${actIdx}].items[${itemIdx}].duration = parseInt(this.value)||0; renderRunSheet();">
+                                </div>
+                                <div style="width:70%;">
+                                    <label>Ensemble / Item</label>
+                                    <input type="text" value="${item.ensemble}" oninput="database[${actIdx}].items[${itemIdx}].ensemble = this.value; renderRunSheet();">
+                                </div>
+                            </div>
+                            <label>Technical Actions & Notes</label>
+                            <textarea rows="2" oninput="database[${actIdx}].items[${itemIdx}].note = this.value; renderRunSheet();">${item.note}</textarea>
+                            <label>Mic Assignment</label>
+                            <input type="text" value="${item.mic}" oninput="database[${actIdx}].items[${itemIdx}].mic = this.value; renderRunSheet();">
+                        </div>
+                    `;
+                });
+                actBlock.innerHTML = `
+                    <button class="btn btn-delete" onclick="deleteEntireAct(${actIdx})" style="background:#c53030;">🗑️ Delete Section</button>
+                    <label style="color:#63b3ed; font-size:11pt; font-weight:bold;">Section Title</label>
+                    <input type="text" value="${act.actTitle}" oninput="database[${actIdx}].actTitle = this.value; renderRunSheet();" style="font-weight:bold; margin-bottom:10px; width:60%;">
+                    <div>${rowsHtml}</div>
+                    <button class="btn btn-add" onclick="addNewRowToAct(${actIdx})">➕ Add Item Row</button>
+                `;
+                container.appendChild(actBlock);
+            });
+        }
+
+        // ─── CLOCK ENGINE ─────────────────────────────────────────────────
+        function formatRunningTime(startStr, ampm, totalElapsedMins) {
+            let [hours, minutes] = startStr.split(':').map(n => parseInt(n) || 0);
+            let calcMins   = minutes + totalElapsedMins;
+            let addedHours = Math.floor(calcMins / 60);
+            let finalMins  = calcMins % 60;
+            let finalHours = hours + addedHours;
+            let displayH   = finalHours % 12 || 12;
+            let period     = (Math.floor(finalHours / 12) % 2 !== 0)
+                             ? (ampm === "PM" ? "AM" : "PM")
+                             : ampm;
+            let paddedMins = finalMins < 10 ? '0' + finalMins : finalMins;
+            return `${displayH}:${paddedMins} ${period}`;
+        }
+
+        // ─── PREVIEW RENDER ───────────────────────────────────────────────
+        function renderRunSheet() {
+            const title   = document.getElementById('showTitle').value;
+            const sub     = document.getElementById('showSub').value;
+            const start   = document.getElementById('startTime').value || "7:00";
+            const period  = document.getElementById('startPeriod').value;
+            let html      = `<h1>${title}</h1><p style="margin-top:0; font-size:10pt; color:#4a5568;"><strong>Location/Details:</strong> ${sub}</p>`;
+            let elapsed   = 0;
+
+            database.forEach(act => {
+                html += `<h2>${act.actTitle}</h2>
+                    <table class="preview-table">
+                        <thead><tr>
+                            <th style="width:15%;">Calculated Time</th>
+                            <th style="width:10%;">Length</th>
+                            <th style="width:20%;">Ensemble / Item</th>
+                            <th style="width:40%;">Technical Actions & Notes</th>
+                            <th style="width:15%;">Mic Assignment</th>
+                        </tr></thead><tbody>`;
+
+                if (act.items.length === 0) {
+                    html += `<tr><td colspan="5" style="text-align:center; color:#a0aec0; font-style:italic; padding:15px;">No items added yet.</td></tr>`;
+                } else {
+                    act.items.forEach(item => {
+                        let ts = formatRunningTime(start, period, elapsed);
+                        html += `<tr>
+                            <td><strong>${ts}</strong></td>
+                            <td style="color:#718096;">${item.duration}m</td>
+                            <td class="bold-blue">${item.ensemble}</td>
+                            <td>${item.note}</td>
+                            <td><strong>${item.mic}</strong></td>
+                        </tr>`;
+                        elapsed += item.duration;
+                    });
+                }
+                html += `</tbody></table>`;
+            });
+
+            document.getElementById('previewArea').innerHTML = html;
+        }
+
+        // ─── EDIT ACTIONS ─────────────────────────────────────────────────
+        function addNewRowToAct(actIdx) {
+            database[actIdx].items.push({ duration: 5, ensemble: "[New Item]", note: "Enter production instructions here.", mic: "Name" });
+            updateAppWorkspace(); renderRunSheet();
+        }
+        function removeRowFromAct(actIdx, itemIdx) {
+            database[actIdx].items.splice(itemIdx, 1);
+            updateAppWorkspace(); renderRunSheet();
+        }
+        function addNewAct() {
+            database.push({ actTitle: "New Section", items: [] });
+            updateAppWorkspace(); renderRunSheet();
+        }
+        function deleteEntireAct(actIdx) {
+            database.splice(actIdx, 1);
+            updateAppWorkspace(); renderRunSheet();
+        }
+
+        // ─── SERVER PERSISTENCE ───────────────────────────────────────────
+        const APP_TYPE = 'runsheet';
+        let currentProjectId = null;
+
+        async function fetchProjectList() {
+            try {
+                const res = await fetch(`/api/projects?app_type=${APP_TYPE}`);
+                const projects = await res.json();
+                const sel = document.getElementById('projectSelector');
+                sel.innerHTML = projects.length
+                    ? projects.map(p => `<option value="${p.id}">${p.name}</option>`).join('')
+                    : '<option disabled>No saved shows yet</option>';
+            } catch (e) { console.error('Could not reach server:', e); }
+        }
+
+        async function saveToServer() {
+            const name = document.getElementById('projectName').value.trim();
+            if (!name) return alert('Enter a show name first.');
+            try {
+                const res  = await fetch('/api/projects', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ app_type: APP_TYPE, name, payload: database })
+                });
+                const data = await res.json();
+                currentProjectId = data.id;
+                alert(`✅ Saved as "${name}"`);
+                fetchProjectList();
+            } catch (e) { alert('Save failed: ' + e.message); }
+        }
+
+        async function updateOnServer() {
+            if (!currentProjectId) return alert('No show open — use ☁️ Save first.');
+            const name = document.getElementById('projectName').value.trim() || undefined;
+            try {
+                await fetch(`/api/projects/${currentProjectId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, payload: database })
+                });
+                alert('✅ Show updated!');
+            } catch (e) { alert('Update failed: ' + e.message); }
+        }
+
+        async function loadFromServer() {
+            const id = document.getElementById('projectSelector').value;
+            if (!id) return alert('Select a show from the list first.');
+            try {
+                const res     = await fetch(`/api/projects/${id}`);
+                const project = await res.json();
+                database         = project.payload;
+                currentProjectId = project.id;
+                document.getElementById('projectName').value = project.name;
+                updateAppWorkspace();   // repaint control panel
+                renderRunSheet();       // repaint preview
+                alert(`📂 Loaded "${project.name}"`);
+            } catch (e) { alert('Load failed: ' + e.message); }
+        }
+
+        async function deleteFromServer() {
+            const id = document.getElementById('projectSelector').value;
+            if (!id) return alert('Select a show to delete.');
+            if (!confirm('Delete this show permanently?')) return;
+            try {
+                await fetch(`/api/projects/${id}`, { method: 'DELETE' });
+                if (currentProjectId === Number(id)) currentProjectId = null;
+                fetchProjectList();
+            } catch (e) { alert('Delete failed: ' + e.message); }
+        }
+
+        // ─── LOCAL FILE (backup option) ───────────────────────────────────
+        function exportLocalFile() {
+            const payload = JSON.stringify(database, null, 2);
+            const blob    = new Blob([payload], { type: 'application/json' });
+            const url     = URL.createObjectURL(blob);
+            const a       = document.createElement('a');
+            a.href        = url;
+            a.download    = 'run_sheet_backup.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function importLocalFile(event) {
+            const reader = new FileReader();
+            reader.onload = e => {
+                try {
+                    const parsed = JSON.parse(e.target.result);
+                    if (!Array.isArray(parsed)) return alert('Invalid file — expected an array.');
+                    database = parsed;
+                    updateAppWorkspace();   // repaint control panel
+                    renderRunSheet();       // repaint preview
+                } catch { alert('Could not parse the JSON file.'); }
+            };
+            reader.readAsText(event.target.files[0]);
+        }
+
+        // ─── INIT ─────────────────────────────────────────────────────────
+        fetchProjectList();
+        updateAppWorkspace();
+        renderRunSheet();
+    </script>
+</body>
+</html>
