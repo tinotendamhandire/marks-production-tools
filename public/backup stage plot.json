@@ -1,0 +1,414 @@
+{
+  "crew": [
+    {
+      "id": "c1",
+      "name": "Ava",
+      "color": "#1D9E75"
+    },
+    {
+      "id": "c2",
+      "name": "Savannah",
+      "color": "#D85A30"
+    },
+    {
+      "id": "c3",
+      "name": "Yuzuki",
+      "color": "#7F77DD"
+    },
+    {
+      "id": "c4",
+      "name": "Carter",
+      "color": "#378ADD"
+    }
+  ],
+  "acts": [
+    {
+      "id": "a1",
+      "title": "Act 1: Senior Concert Band",
+      "ctx": "Showcase 2026",
+      "notes": "",
+      "micChannels": [],
+      "elements": [
+        {
+          "id": "el_1005",
+          "icon": "🪑",
+          "label": "Chair",
+          "color": "#4a5568",
+          "x": "407px",
+          "y": "155px",
+          "crew": ""
+        },
+        {
+          "id": "el_1006",
+          "icon": "🪑",
+          "label": "Chair",
+          "color": "#4a5568",
+          "x": "453px",
+          "y": "205px",
+          "crew": ""
+        },
+        {
+          "id": "el_1007",
+          "icon": "🪑",
+          "label": "Chair",
+          "color": "#4a5568",
+          "x": "278px",
+          "y": "124px",
+          "crew": ""
+        },
+        {
+          "id": "el_1008",
+          "icon": "🪑",
+          "label": "Chair",
+          "color": "#4a5568",
+          "x": "456px",
+          "y": "35px",
+          "crew": ""
+        },
+        {
+          "id": "el_1009",
+          "icon": "🪑",
+          "label": "Chair",
+          "color": "#4a5568",
+          "x": "407px",
+          "y": "36px",
+          "crew": ""
+        },
+        {
+          "id": "el_1010",
+          "icon": "🪑",
+          "label": "Chair",
+          "color": "#4a5568",
+          "x": "348px",
+          "y": "42px",
+          "crew": ""
+        },
+        {
+          "id": "el_1011",
+          "icon": "🪑",
+          "label": "Chair",
+          "color": "#4a5568",
+          "x": "288px",
+          "y": "42px",
+          "crew": ""
+        },
+        {
+          "id": "el_1012",
+          "icon": "🪑",
+          "label": "Chair",
+          "color": "#4a5568",
+          "x": "228px",
+          "y": "45px",
+          "crew": ""
+        },
+        {
+          "id": "el_1013",
+          "icon": "🪑",
+          "label": "Chair",
+          "color": "#4a5568",
+          "x": "175px",
+          "y": "47px",
+          "crew": ""
+        },
+        {
+          "id": "el_1014",
+          "icon": "🪑",
+          "label": "Chair",
+          "color": "#4a5568",
+          "x": "118px",
+          "y": "47px",
+          "crew": ""
+        },
+        {
+          "id": "el_1015",
+          "icon": "🪑",
+          "label": "Chair",
+          "color": "#4a5568",
+          "x": "12px",
+          "y": "39px",
+          "crew": ""
+        },
+        {
+          "id": "el_1016",
+          "icon": "🪑",
+          "label": "Chair",
+          "color": "#4a5568",
+          "x": "507px",
+          "y": "40px",
+          "crew": ""
+        },
+        {
+          "id": "el_1017",
+          "icon": "🪑",
+          "label": "Chair",
+          "color": "#4a5568",
+          "x": "560px",
+          "y": "36px",
+          "crew": ""
+        },
+        {
+          "id": "el_1019",
+          "icon": "🪑",
+          "label": "Chair",
+          "color": "#4a5568",
+          "x": "503px",
+          "y": "248px",
+          "crew": ""
+        },
+        {
+          "id": "el_1021",
+          "icon": "🪑",
+          "label": "Chair",
+          "color": "#4a5568",
+          "x": "617px",
+          "y": "30px",
+          "crew": ""
+        },
+        {
+          "id": "el_1022",
+          "icon": "🪑",
+          "label": "Chair",
+          "color": "#4a5568",
+          "x": "360px",
+          "y": "123px",
+          "crew": ""
+        },
+        {
+          "id": "el_1023",
+          "icon": "🪑",
+          "label": "Chair",
+          "color": "#4a5568",
+          "x": "66px",
+          "y": "46px",
+          "crew": ""
+        },
+        {
+          "id": "el_1024",
+          "icon": "🪑",
+          "label": "Chair",
+          "color": "#4a5568",
+          "x": "157px",
+          "y": "202px",
+          "crew": ""
+        },
+        {
+          "id": "el_1025",
+          "icon": "🪑",
+          "label": "Chair",
+          "color": "#4a5568",
+          "x": "206px",
+          "y": "165px",
+          "crew": ""
+        },
+        {
+          "id": "el_1026",
+          "icon": "🪑",
+          "label": "Chair",
+          "color": "#4a5568",
+          "x": "116px",
+          "y": "251px",
+          "crew": ""
+        },
+        {
+          "id": "el_1027",
+          "icon": "🎼",
+          "label": "Stand",
+          "color": "#718096",
+          "x": "180px",
+          "y": "265px",
+          "crew": ""
+        },
+        {
+          "id": "el_1028",
+          "icon": "🎼",
+          "label": "Stand",
+          "color": "#718096",
+          "x": "227px",
+          "y": "214px",
+          "crew": ""
+        },
+        {
+          "id": "el_1029",
+          "icon": "🎼",
+          "label": "Stand",
+          "color": "#718096",
+          "x": "445px",
+          "y": "261px",
+          "crew": ""
+        },
+        {
+          "id": "el_1030",
+          "icon": "🎼",
+          "label": "Stand",
+          "color": "#718096",
+          "x": "398px",
+          "y": "207px",
+          "crew": ""
+        },
+        {
+          "id": "el_1031",
+          "icon": "🎼",
+          "label": "Stand",
+          "color": "#718096",
+          "x": "320px",
+          "y": "165px",
+          "crew": ""
+        },
+        {
+          "id": "el_1032",
+          "icon": "🎤",
+          "label": "Mic Stand",
+          "color": "#e53e3e",
+          "x": "47px",
+          "y": "145px",
+          "crew": ""
+        },
+        {
+          "id": "el_1033",
+          "icon": "🎤",
+          "label": "Mic Stand",
+          "color": "#e53e3e",
+          "x": "41px",
+          "y": "290px",
+          "crew": ""
+        },
+        {
+          "id": "el_1034",
+          "icon": "🎤",
+          "label": "Mic Stand",
+          "color": "#e53e3e",
+          "x": "609px",
+          "y": "274px",
+          "crew": ""
+        },
+        {
+          "id": "el_1035",
+          "icon": "🎤",
+          "label": "Mic Stand",
+          "color": "#e53e3e",
+          "x": "577px",
+          "y": "124px",
+          "crew": ""
+        },
+        {
+          "id": "el_1036",
+          "icon": "🎼",
+          "label": "Coskun",
+          "color": "#718096",
+          "x": "322px",
+          "y": "256px",
+          "crew": ""
+        },
+        {
+          "id": "el_1037",
+          "icon": "🎼",
+          "label": "Stand",
+          "color": "#718096",
+          "x": "458px",
+          "y": "81px",
+          "crew": ""
+        },
+        {
+          "id": "el_1038",
+          "icon": "🎼",
+          "label": "Stand",
+          "color": "#718096",
+          "x": "408px",
+          "y": "83px",
+          "crew": ""
+        },
+        {
+          "id": "el_1039",
+          "icon": "🎼",
+          "label": "Stand",
+          "color": "#718096",
+          "x": "349px",
+          "y": "82px",
+          "crew": ""
+        },
+        {
+          "id": "el_1040",
+          "icon": "🎼",
+          "label": "Stand",
+          "color": "#718096",
+          "x": "208px",
+          "y": "85px",
+          "crew": ""
+        },
+        {
+          "id": "el_1041",
+          "icon": "🎼",
+          "label": "Stand",
+          "color": "#718096",
+          "x": "121px",
+          "y": "86px",
+          "crew": ""
+        },
+        {
+          "id": "el_1042",
+          "icon": "🎼",
+          "label": "Stand",
+          "color": "#718096",
+          "x": "43px",
+          "y": "92px",
+          "crew": ""
+        },
+        {
+          "id": "el_1043",
+          "icon": "🎼",
+          "label": "Stand",
+          "color": "#718096",
+          "x": "616px",
+          "y": "79px",
+          "crew": ""
+        },
+        {
+          "id": "el_1044",
+          "icon": "🎼",
+          "label": "Stand",
+          "color": "#718096",
+          "x": "561px",
+          "y": "81px",
+          "crew": ""
+        },
+        {
+          "id": "el_1045",
+          "icon": "🎼",
+          "label": "Stand",
+          "color": "#718096",
+          "x": "289px",
+          "y": "81px",
+          "crew": ""
+        },
+        {
+          "id": "el_1046",
+          "icon": "🎼",
+          "label": "Stand",
+          "color": "#718096",
+          "x": "505px",
+          "y": "84px",
+          "crew": ""
+        },
+        {
+          "id": "el_1047",
+          "icon": "🎼",
+          "label": "Stand",
+          "color": "#718096",
+          "x": "536px",
+          "y": "3px",
+          "crew": ""
+        },
+        {
+          "id": "el_1048",
+          "icon": "🎼",
+          "label": "Stand",
+          "color": "#718096",
+          "x": "135px",
+          "y": "5px",
+          "crew": ""
+        }
+      ]
+    }
+  ],
+  "gearSize": 48
+}

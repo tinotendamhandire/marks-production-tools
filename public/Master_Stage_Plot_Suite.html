@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Stage Plot Designer - Smart Edition</title>
+<title>Stage Plot Designer</title>
 <style>
 * { box-sizing: border-box; }
 body { font-family: Arial, sans-serif; margin:0; padding:0; display:flex; height:100vh; background:#1a202c; color:#fff; overflow:hidden; }
@@ -12,151 +12,152 @@ body { font-family: Arial, sans-serif; margin:0; padding:0; display:flex; height
 .home-btn:hover { background:#4a5568; color:#fff; }
 
 /* ── LAYOUT ── */
-.left-sidebar { width:300px; min-width:300px; background:#232d3f; border-right:2px solid #2d3748; display:flex; flex-direction:column; overflow:hidden; }
-.sidebar-scroll { flex:1; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:8px; }
+.left-sidebar { width:280px; min-width:280px; background:#232d3f; border-right:2px solid #2d3748; display:flex; flex-direction:column; overflow:hidden; }
+.sidebar-scroll { flex:1; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:6px; }
 .right-area { flex:1; background:#e2e8f0; overflow-y:auto; display:flex; flex-direction:column; align-items:center; padding:24px; }
 
 /* ── SIDEBAR SECTIONS ── */
 .ss { background:#1a202c; border:1px solid #2d3748; border-radius:8px; flex-shrink:0; }
-.ss-hdr { background:#2d3748; padding:10px 12px; font-size:8.5pt; font-weight:bold; color:#a0aec0; letter-spacing:1px; text-transform:uppercase; display:flex; align-items:center; gap:6px; cursor:pointer; border-radius:8px; user-select:none; }
-.ss-hdr:hover { background:#374151; color:#e2e8f0; }
+.ss-hdr { background:#2d3748; padding:8px 12px; font-size:8pt; font-weight:bold; color:#a0aec0; letter-spacing:1px; text-transform:uppercase; display:flex; align-items:center; gap:6px; cursor:pointer; border-radius:8px; user-select:none; }
+.ss-hdr:hover { background:#374151; }
 .ss.closed .ss-hdr { border-radius:8px; }
 .ss-hdr .arr { margin-left:auto; color:#718096; transition:transform 0.2s; }
 .ss.closed .arr { transform:rotate(-90deg); }
-.ss-body { padding:14px; border-top:1px solid #2d3748; }
+.ss-body { padding:12px; border-top:1px solid #2d3748; }
 .ss.closed .ss-body { display:none; }
 
-label { display:block; font-size:8pt; font-weight:bold; color:#a0aec0; margin:10px 0 4px; letter-spacing:0.4px; }
+label { display:block; font-size:8pt; font-weight:bold; color:#a0aec0; margin:8px 0 3px; letter-spacing:0.4px; }
 label:first-child { margin-top:0; }
-input[type=text], textarea, select { width:100%; padding:8px 10px; background:#2d3748; border:1px solid #4a5568; color:#fff; border-radius:6px; font-size:9pt; }
+input[type=text], textarea, select { width:100%; padding:7px 9px; background:#2d3748; border:1px solid #4a5568; color:#fff; border-radius:6px; font-size:9pt; }
 input[type=text]:focus, textarea:focus, select:focus { outline:none; border-color:#63b3ed; }
 
 /* ── BUTTONS ── */
-.btn { color:white; padding:8px 12px; border:none; border-radius:6px; font-weight:bold; cursor:pointer; font-size:8.5pt; transition:filter 0.15s; }
+.btn { color:white; padding:6px 10px; border:none; border-radius:6px; font-weight:bold; cursor:pointer; font-size:8.5pt; }
 .btn:hover { filter:brightness(1.15); }
-.btn-full { width:100%; padding:10px; font-size:9pt; margin-bottom:6px; text-align:left; display:flex; align-items:center; gap:7px; }
+.btn-full { width:100%; padding:9px; font-size:9pt; margin-bottom:5px; text-align:left; display:flex; align-items:center; gap:7px; }
 
 /* ── ACT LIST ── */
-.act-item { background:#232d3f; border:1px solid #4a5568; border-radius:6px; padding:10px 12px; margin-bottom:6px; cursor:pointer; display:flex; align-items:center; gap:10px; transition:border-color 0.15s; }
+.act-item { background:#232d3f; border:1px solid #4a5568; border-radius:6px; padding:8px 10px; margin-bottom:5px; cursor:pointer; display:flex; align-items:center; gap:8px; transition:border-color 0.15s; }
 .act-item:hover { border-color:#63b3ed; }
 .act-item.active { border-color:#4299e1; background:#2b4a6f; }
-.act-item .act-num { font-size:8pt; color:#a0aec0; min-width:18px; font-weight:bold; }
-.act-item.active .act-num { color:#90cdf4; }
-.act-item .act-name { font-size:9.5pt; flex:1; font-weight:bold; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.act-nav-btns { display:flex; gap:3px; }
-.act-nav-btn { background:#1a202c; color:#a0aec0; border:1px solid #4a5568; border-radius:4px; width:22px; height:22px; font-size:8pt; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; }
+.act-item .act-num { font-size:8pt; color:#718096; min-width:18px; }
+.act-item .act-name { font-size:9pt; flex:1; font-weight:bold; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.act-nav-btns { display:flex; gap:2px; }
+.act-nav-btn { background:#1a202c; color:#a0aec0; border:1px solid #4a5568; border-radius:4px; width:20px; height:20px; font-size:8pt; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; }
 .act-nav-btn:hover { background:#2d3748; color:#fff; }
 .act-nav-btn.danger { border-color:#e53e3e; color:#fc8181; }
 .act-nav-btn.danger:hover { background:#e53e3e; color:#fff; }
 
 /* ── CREW PILLS ── */
-.crew-list { display:flex; flex-direction:column; gap:6px; }
-.crew-item { display:flex; align-items:center; gap:10px; }
-.crew-dot { width:14px; height:14px; border-radius:50%; flex-shrink:0; border:1px solid rgba(255,255,255,0.2); }
+.crew-list { display:flex; flex-direction:column; gap:5px; }
+.crew-item { display:flex; align-items:center; gap:8px; }
+.crew-dot { width:12px; height:12px; border-radius:50%; flex-shrink:0; }
 .crew-name { font-size:9pt; flex:1; }
-.crew-remove { background:none; border:none; color:#fc8181; cursor:pointer; font-size:12pt; padding:0; line-height:1; }
+.crew-remove { background:none; border:none; color:#fc8181; cursor:pointer; font-size:11pt; padding:0; line-height:1; }
 .crew-remove:hover { color:#e53e3e; }
 
 /* ── GEAR GRID ── */
-.gear-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:10px; }
-.gear-btn { color:white; padding:10px 4px; border:none; border-radius:6px; font-weight:bold; cursor:pointer; font-size:8pt; text-align:center; transition:filter 0.15s; }
+.gear-grid { display:grid; grid-template-columns:1fr 1fr; gap:5px; }
+.gear-btn { color:white; padding:8px 4px; border:none; border-radius:6px; font-weight:bold; cursor:pointer; font-size:8pt; text-align:center; transition:filter 0.15s; }
 .gear-btn:hover { filter:brightness(1.2); }
 
 /* ── TOOLTIP ── */
-#tt { position:fixed; z-index:99999; background:#2d3748; color:#e2e8f0; border:1px solid #4a5568; border-radius:6px; padding:8px 12px; font-size:8.5pt; pointer-events:none; box-shadow:0 6px 16px rgba(0,0,0,0.4); max-width:220px; line-height:1.4; text-align:center; display:none; }
+#tt { position:fixed; z-index:99999; background:#1a202c; color:#e2e8f0; border:1px solid #4a5568; border-radius:6px; padding:6px 10px; font-size:8pt; pointer-events:none; box-shadow:0 4px 14px rgba(0,0,0,0.55); max-width:200px; line-height:1.4; text-align:center; display:none; }
 
 /* ── HELP OVERLAY ── */
-.help-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:1000; align-items:center; justify-content:center; }
+.help-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:1000; align-items:center; justify-content:center; }
 .help-overlay.visible { display:flex; }
-.help-modal { background:#232d3f; border:1px solid #4a5568; border-radius:12px; padding:32px; max-width:600px; width:90%; position:relative; max-height:90vh; overflow-y:auto; box-shadow:0 10px 30px rgba(0,0,0,0.5); }
-.help-modal h2 { color:#63b3ed; margin-top:0; font-size:16pt; }
-.help-modal h3 { color:#90cdf4; margin-bottom:8px; margin-top:20px; font-size:10.5pt; text-transform:uppercase; letter-spacing:1px; }
-.help-close { position:absolute; top:16px; right:16px; background:#4a5568; color:white; border:none; border-radius:50%; width:30px; height:30px; font-size:13pt; cursor:pointer; display:flex; align-items:center; justify-content:center; }
-.help-tip { background:#1a202c; border-left:4px solid #4299e1; padding:12px 14px; border-radius:4px; font-size:9.5pt; color:#cbd5e0; margin-top:8px; line-height:1.6; }
+.help-modal { background:#232d3f; border:1px solid #4a5568; border-radius:12px; padding:28px 32px; max-width:580px; width:90%; position:relative; max-height:90vh; overflow-y:auto; }
+.help-modal h2 { color:#63b3ed; margin-top:0; font-size:15pt; }
+.help-modal h3 { color:#90cdf4; margin-bottom:6px; margin-top:18px; font-size:10pt; text-transform:uppercase; letter-spacing:1px; }
+.help-close { position:absolute; top:16px; right:16px; background:#4a5568; color:white; border:none; border-radius:50%; width:28px; height:28px; font-size:13pt; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+.help-tip { background:#1a202c; border-left:3px solid #4299e1; padding:9px 12px; border-radius:4px; font-size:9pt; color:#a0aec0; margin-top:6px; line-height:1.5; }
 
 /* ── VIEW TOGGLE ── */
 .view-toggle { display:flex; background:#2d3748; border-radius:7px; overflow:hidden; border:1px solid #4a5568; }
-.vt-btn { padding:8px 16px; border:none; background:transparent; color:#a0aec0; font-size:9pt; font-weight:bold; cursor:pointer; transition:all 0.15s; }
+.vt-btn { padding:6px 14px; border:none; background:transparent; color:#a0aec0; font-size:9pt; font-weight:bold; cursor:pointer; transition:all 0.15s; }
 .vt-btn.active { background:#4299e1; color:#fff; }
 
 /* ── PLOT PAGE (screen) ── */
 .plot-page { width:210mm; background:white; box-shadow:0 4px 20px rgba(0,0,0,0.12); margin-bottom:30px; display:flex; flex-direction:column; }
 
 /* ── PLOT HEADER (print) ── */
-.plot-header { text-align:center; border-bottom:3px solid #1a365d; padding:16px 14mm 12px; }
-.plot-header h1 { margin:0; font-size:22pt; color:#1a365d !important; print-color-adjust:exact; -webkit-print-color-adjust:exact; }
-.plot-header h2 { margin:6px 0 0; font-size:13pt; color:#4a5568 !important; font-weight:normal; }
-.plot-header .view-badge { display:inline-block; margin-top:10px; font-size:8.5pt; font-weight:bold; letter-spacing:1px; text-transform:uppercase; padding:4px 12px; border-radius:20px; }
+.plot-header { text-align:center; border-bottom:3px solid #1a365d; padding:14px 14mm 10px; }
+.plot-header h1 { margin:0; font-size:20pt; color:#1a365d !important; print-color-adjust:exact; -webkit-print-color-adjust:exact; }
+.plot-header h2 { margin:4px 0 0; font-size:12pt; color:#4a5568 !important; font-weight:normal; }
+.plot-header .view-badge { display:inline-block; margin-top:6px; font-size:8pt; font-weight:bold; letter-spacing:1px; text-transform:uppercase; padding:3px 10px; border-radius:20px; }
 .badge-layout { background:#ebf8ff; color:#2b6cb0; border:1px solid #bee3f8; }
 .badge-changeover { background:#fff5f5; color:#c53030; border:1px solid #fed7d7; }
 
-.plot-body { padding:12px 14mm 14mm; display:flex; flex-direction:column; flex:1; }
-.zone-label { font-size:8pt; font-weight:bold; letter-spacing:2px; text-transform:uppercase; text-align:center; color:#718096; padding:5px 0; print-color-adjust:exact; -webkit-print-color-adjust:exact; }
+.plot-body { padding:10px 14mm 14mm; display:flex; flex-direction:column; flex:1; }
+.zone-label { font-size:7.5pt; font-weight:bold; letter-spacing:2px; text-transform:uppercase; text-align:center; color:#718096; padding:3px 0; print-color-adjust:exact; -webkit-print-color-adjust:exact; }
 
 /* ── STAGE GRID ── */
 .stage-grid { width:100%; height:105mm; border:2.5px solid #2d3748; background:#edf2f7; position:relative; border-radius:4px; background-image:radial-gradient(#cbd5e0 1px, transparent 1px); background-size:14px 14px; print-color-adjust:exact; -webkit-print-color-adjust:exact; overflow:visible; }
 .stage-lip { position:absolute; bottom:22mm; left:0; right:0; border-bottom:1.5px dashed #a0aec0; }
-.stage-lip-label { position:absolute; bottom:23mm; right:6px; font-size:7pt; color:#a0aec0; text-transform:uppercase; letter-spacing:1px; }
+.stage-lip-label { position:absolute; bottom:23mm; right:6px; font-size:6.5pt; color:#a0aec0; text-transform:uppercase; letter-spacing:1px; }
 
 /* ── PLACED ELEMENTS ── */
 :root { --gear-size: 48px; }
-.placed-el { position:absolute; width:var(--gear-size); height:var(--gear-size); border-radius:6px; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:move; user-select:none; border:2.5px solid transparent; padding:3px; overflow:visible; z-index:1; transition:width 0.1s, height 0.1s; color:white; text-shadow:0 1px 2px rgba(0,0,0,0.5); }
+.placed-el { position:absolute; width:var(--gear-size); height:var(--gear-size); border-radius:6px; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:move; user-select:none; border:2px solid transparent; padding:3px; overflow:visible; z-index:1; transition:width 0.1s, height 0.1s; }
 .placed-el:hover { z-index:10; }
 .placed-el .el-icon { font-size:calc(var(--gear-size) * 0.38); line-height:1; }
-.placed-el .el-label { font-size:6.5pt; text-align:center; line-height:1.1; margin-top:2px; font-weight:bold; word-break:break-word; max-width:100%; }
-.placed-el .el-remove { position:absolute; top:-8px; right:-8px; background:#e53e3e; color:white; border:none; border-radius:50%; width:20px; height:20px; font-size:10px; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 2px 5px rgba(0,0,0,0.4); z-index:11; border:1.5px solid rgba(255,255,255,0.4); }
-
-/* Ghost state (for struck items in changeover view) */
-.placed-el.ghost-el { opacity:0.35; border-style:dashed !important; cursor:default; pointer-events:none; }
-.placed-el.ghost-el .el-icon { filter:grayscale(100%); }
+.placed-el .el-label { font-size:6pt; text-align:center; line-height:1.1; margin-top:2px; font-weight:bold; word-break:break-word; max-width:100%; }
+.placed-el .el-crew-dot { width:8px; height:8px; border-radius:50%; margin-top:2px; flex-shrink:0; }
+.placed-el .el-remove { position:absolute; top:-7px; right:-7px; background:#e53e3e; color:white; border:none; border-radius:50%; width:18px; height:18px; font-size:9px; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 2px 5px rgba(0,0,0,0.4); z-index:11; border:1.5px solid rgba(255,255,255,0.3); }
+/* ON state */
+.placed-el.state-on { box-shadow:0 2px 6px rgba(0,0,0,0.2); }
+/* OFF state — faded dashed outline */
+.placed-el.state-off { opacity:0.45; border-style:dashed !important; }
+.placed-el.state-off .el-icon { text-decoration:line-through; }
 
 /* ── MIC TRAY ── */
-.mic-tray-section { margin-top:14px; }
-.mic-tray-hdr { background:#1a365d; color:white; font-size:8.5pt; font-weight:bold; text-transform:uppercase; letter-spacing:1px; padding:6px 12px; border-radius:4px 4px 0 0; print-color-adjust:exact; -webkit-print-color-adjust:exact; }
-.mic-tray-body { border:2px solid #1a365d; border-top:none; border-radius:0 0 4px 4px; background:#f7fafc; padding:10px; min-height:22mm; print-color-adjust:exact; -webkit-print-color-adjust:exact; }
-.mic-chip { background:white; border:2px solid #2b6cb0; border-radius:6px; padding:5px 8px; display:inline-flex; align-items:center; gap:6px; font-size:8.5pt; color:#2d3748; margin:3px; }
-.mic-chip .ch-badge { border-radius:50%; width:18px; height:18px; font-size:7.5pt; font-weight:bold; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.mic-tray-section { margin-top:10px; }
+.mic-tray-hdr { background:#1a365d; color:white; font-size:8pt; font-weight:bold; text-transform:uppercase; letter-spacing:1px; padding:5px 10px; border-radius:4px 4px 0 0; print-color-adjust:exact; -webkit-print-color-adjust:exact; }
+.mic-tray-body { border:2px solid #1a365d; border-top:none; border-radius:0 0 4px 4px; background:#f7fafc; padding:8px; min-height:22mm; print-color-adjust:exact; -webkit-print-color-adjust:exact; }
+.mic-chip { background:white; border:2px solid #2b6cb0; border-radius:6px; padding:4px 7px; display:inline-flex; align-items:center; gap:5px; font-size:8pt; color:#2d3748; margin:3px; }
+.mic-chip .ch-badge { border-radius:50%; width:17px; height:17px; font-size:7pt; font-weight:bold; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
 .mic-chip .ch-badge.wired { background:#2b6cb0; color:white; }
 .mic-chip .ch-badge.wireless { background:#9b2c2c; color:white; }
-.mic-chip .ch-type { font-size:7pt; color:#718096; display:block; }
+.mic-chip .ch-type { font-size:6.5pt; color:#718096; display:block; }
 
 /* ── CHANGEOVER LISTS ── */
-.changeover-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:12px; }
-.co-panel { border-radius:6px; padding:12px 14px; border:2px solid; }
-.co-panel.bring-on { background:#f0fff4; border-color:#9ae6b4; }
-.co-panel.strike   { background:#fff5f5; border-color:#feb2b2; }
-.co-hdr { font-size:8.5pt; font-weight:bold; text-transform:uppercase; letter-spacing:1px; margin:0 0 10px; }
+.changeover-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px; }
+.co-panel { border-radius:6px; padding:10px 12px; }
+.co-panel.bring-on { background:#f0fff4; border:1.5px solid #9ae6b4; }
+.co-panel.strike   { background:#fff5f5; border:1.5px solid #feb2b2; }
+.co-hdr { font-size:8pt; font-weight:bold; text-transform:uppercase; letter-spacing:1px; margin:0 0 8px; }
 .co-hdr.bring-on { color:#276749; }
 .co-hdr.strike   { color:#9b2c2c; }
-.co-item { display:flex; align-items:center; gap:8px; font-size:9.5pt; color:#2d3748; margin-bottom:6px; font-weight:bold; }
-.co-color-box { width:14px; height:14px; border-radius:3px; flex-shrink:0; border:1px solid rgba(0,0,0,0.1); print-color-adjust:exact; -webkit-print-color-adjust:exact; }
-.co-who { margin-left:auto; font-size:8.5pt; color:#718096; font-style:italic; font-weight:normal; }
-.co-empty { font-size:9pt; color:#a0aec0; font-style:italic; }
+.co-item { display:flex; align-items:center; gap:7px; font-size:9pt; color:#2d3748; margin-bottom:5px; }
+.co-dot { width:9px; height:9px; border-radius:50%; flex-shrink:0; print-color-adjust:exact; -webkit-print-color-adjust:exact; }
+.co-who { margin-left:auto; font-size:8pt; color:#718096; font-style:italic; }
+.co-empty { font-size:8.5pt; color:#a0aec0; font-style:italic; }
 
 /* ── CREW LEGEND (printed) ── */
-.crew-legend { display:flex; flex-wrap:wrap; gap:12px; margin-top:10px; padding:10px 0; border-top:1px solid #e2e8f0; justify-content:center; }
-.crew-legend-item { display:flex; align-items:center; gap:6px; font-size:8.5pt; color:#4a5568; font-weight:bold; }
-.crew-legend-box { width:12px; height:12px; border-radius:3px; print-color-adjust:exact; -webkit-print-color-adjust:exact; }
+.crew-legend { display:flex; flex-wrap:wrap; gap:10px; margin-top:8px; padding:8px 0; border-top:1px solid #e2e8f0; }
+.crew-legend-item { display:flex; align-items:center; gap:5px; font-size:8pt; color:#4a5568; }
+.crew-legend-dot { width:10px; height:10px; border-radius:50%; print-color-adjust:exact; -webkit-print-color-adjust:exact; }
 
 /* tech notes */
-.tech-notes-area { margin-top:auto; border-top:2px dashed #cbd5e0; padding-top:10px; margin-top:14px; }
-.tech-notes-area h4 { color:#1a365d; margin:0 0 6px; font-size:10.5pt; }
-.notes-box { font-size:9.5pt; line-height:1.6; color:#2d3748; white-space:pre-wrap; min-height:12mm; }
+.tech-notes-area { margin-top:auto; border-top:2px dashed #cbd5e0; padding-top:8px; margin-top:12px; }
+.tech-notes-area h4 { color:#1a365d; margin:0 0 4px; font-size:10pt; }
+.notes-box { font-size:9pt; line-height:1.5; color:#2d3748; white-space:pre-wrap; min-height:12mm; }
 
 /* ── SIZE SLIDER ── */
-.size-row { display:flex; align-items:center; gap:10px; background:#0d1117; padding:10px 12px; border-radius:6px; border:1px solid #2d3748; margin-bottom:10px; }
-.size-row span { font-size:8pt; color:#718096; white-space:nowrap; font-weight:bold; }
+.size-row { display:flex; align-items:center; gap:8px; background:#0d1117; padding:7px 10px; border-radius:6px; border:1px solid #2d3748; margin-bottom:8px; }
+.size-row span { font-size:7.5pt; color:#718096; white-space:nowrap; }
 input[type=range] { flex:1; padding:0; background:transparent; border:none; accent-color:#4299e1; cursor:pointer; }
 
-/* ── MIC CHANNEL TABLE ── */
-.mic-ch-table { width:100%; border-collapse:collapse; margin-bottom:8px; }
-.mic-ch-table th { background:#2d3748; color:#a0aec0; font-size:8pt; padding:6px 8px; text-align:left; text-transform:uppercase; letter-spacing:0.5px; }
-.mic-ch-table td { padding:4px 3px; }
-.ch-num-badge { border-radius:50%; width:22px; height:22px; font-size:8.5pt; font-weight:bold; display:flex; align-items:center; justify-content:center; flex-shrink:0; color:white; }
-.ch-input { padding:6px 8px; font-size:9pt; border-radius:4px; width:100%; background:#2d3748; border:1px solid #4a5568; color:#fff; }
-.ch-type-sel { padding:6px; font-size:8.5pt; border-radius:4px; background:#2d3748; border:1px solid #4a5568; color:#fff; width:100%; }
-.ch-rm-btn { background:none; border:none; color:#fc8181; cursor:pointer; font-size:12pt; padding:0 6px; }
-.add-ch-btn { background:#38a169; color:white; border:none; border-radius:5px; padding:8px 12px; font-size:9pt; font-weight:bold; cursor:pointer; width:100%; }
+/* ── MIC CHANNEL TABLE (sidebar) ── */
+.mic-ch-table { width:100%; border-collapse:collapse; }
+.mic-ch-table th { background:#2d3748; color:#a0aec0; font-size:7.5pt; padding:5px 6px; text-align:left; text-transform:uppercase; letter-spacing:0.5px; }
+.mic-ch-table td { padding:3px 2px; }
+.ch-num-badge { border-radius:50%; width:20px; height:20px; font-size:8pt; font-weight:bold; display:flex; align-items:center; justify-content:center; flex-shrink:0; color:white; }
+.ch-input { padding:4px 6px; font-size:8.5pt; border-radius:4px; width:100%; background:#2d3748; border:1px solid #4a5568; color:#fff; }
+.ch-type-sel { padding:4px; font-size:8pt; border-radius:4px; background:#2d3748; border:1px solid #4a5568; color:#fff; width:100%; }
+.ch-rm-btn { background:none; border:none; color:#fc8181; cursor:pointer; font-size:11pt; padding:0 4px; }
+.add-ch-btn { background:#38a169; color:white; border:none; border-radius:5px; padding:6px 10px; font-size:8.5pt; font-weight:bold; cursor:pointer; width:100%; margin-top:6px; }
 
 /* ── PRINT ── */
 @page { margin:0; }
@@ -177,63 +178,83 @@ input[type=range] { flex:1; padding:0; background:transparent; border:none; acce
 <body>
 <div id="tt"></div>
 
-<a href="#" class="home-btn" data-tip="Return to Dashboard">🏠 Home</a>
+<a href="index.html" class="home-btn">🏠 Home</a>
 
+<!-- ══ HELP OVERLAY ══ -->
 <div class="help-overlay" id="helpOverlay" onclick="if(event.target===this)this.classList.remove('visible')">
   <div class="help-modal">
     <button class="help-close" onclick="document.getElementById('helpOverlay').classList.remove('visible')">✕</button>
-    <h2>🎛️ Stage Plot Designer - Smart Edition</h2>
+    <h2>🎛️ Stage Plot Designer</h2>
     <h3>Workflow</h3>
-    <div class="help-tip">1 · Define your <strong>crew</strong> once. Each person gets a colour.<br><br>2 · Add your <strong>acts</strong>. When you click "+ Add Act", it automatically copies everything currently on stage to save time.<br><br>3 · Drop elements on stage. Assign them to crew in the 'Selected Element' panel.<br><br>4 · <strong>Smart Timeline:</strong> Adding, moving, or modifying gear automatically cascades to future acts. If you Strike an item, it removes it from future acts, and leaves a "ghost" on the current act so the crew knows where to grab it.</div>
-    <h3>Views & Printing</h3>
-    <div class="help-tip"><strong>Layout View</strong> — Clean diagram, native gear colours. Best for directors and performers.<br><br><strong>Changeover View</strong> — Element boxes take on the assigned Crew's colour. Auto-generates aggregated "Bring on" and "Strike" lists based on differences between acts. Best for stage crew.</div>
+    <div class="help-tip">1 · Define your <strong>crew</strong> once for the whole show — each person gets a colour dot.<br><br>2 · Add your <strong>acts</strong> in run-order. Drag to reorder.<br><br>3 · Place <strong>elements</strong> on the stage map. Each element has an ON/OFF state and a crew assignment.<br><br>4 · Switch between <strong>Layout view</strong> (clean diagram) and <strong>Changeover view</strong> (crew-coloured, with bring-on/strike lists).<br><br>5 · Print either view — Layout for directors, Changeover for crew.</div>
+    <h3>Elements</h3>
+    <div class="help-tip"><strong>Click a gear button</strong> to drop an element onto the stage. <strong>Drag</strong> to reposition. <strong>Double-click</strong> to rename. The dot beneath each element shows which crew member owns it.</div>
+    <h3>ON / OFF state</h3>
+    <div class="help-tip">Click an element then use the ON/OFF toggle in the element panel. OFF elements appear faded — they show where things are being struck FROM, so crew know where to go collect them.</div>
+    <h3>Printing</h3>
+    <div class="help-tip"><strong>Print Layout</strong> — clean diagram, no crew colours. For directors and performers.<br><br><strong>Print Changeover</strong> — crew colours, bring-on/strike lists. For your stage crew.</div>
   </div>
 </div>
 
+<!-- ══ LEFT SIDEBAR ══ -->
 <div class="left-sidebar">
 <div class="sidebar-scroll">
 
+  <!-- CREW -->
   <div class="ss">
-    <div class="ss-hdr" onclick="toggleSS(this)">🎭 Acts (Run Order) <span class="arr">▾</span></div>
-    <div class="ss-body">
-      <div id="actList"></div>
-      <button class="btn btn-full" style="background:#805ad5;margin-top:8px;" onclick="addAct()" data-tip="Creates a new act right after this one, inheriting all stage items.">＋ Add Act</button>
-      
-      <div style="border-top:1px solid #4a5568; margin:14px 0 10px;"></div>
-      <label>Act Title</label>
-      <input type="text" id="inTitle" oninput="updateActiveMeta()" placeholder="e.g. Senior Jazz Band">
-      <label>Show Context</label>
-      <input type="text" id="inCtx" oninput="updateActiveMeta()" placeholder="e.g. Showcase 2026">
-      <label>Tech Notes</label>
-      <textarea id="inNotes" rows="3" oninput="updateActiveMeta()" placeholder="Patching notes, special requests..."></textarea>
-    </div>
-  </div>
-
-  <div class="ss closed">
     <div class="ss-hdr" onclick="toggleSS(this)">👥 Show Crew <span class="arr">▾</span></div>
     <div class="ss-body">
-      <p style="font-size:8pt;color:#718096;margin:0 0 10px;">Assign colours to crew. In Changeover View, stage boxes will use these colours.</p>
+      <p style="font-size:7.5pt;color:#718096;margin:0 0 8px;">Defined once for the whole show. Each person gets a colour used across all plots.</p>
       <div class="crew-list" id="crewList"></div>
-      <div style="display:flex;gap:8px;margin-top:10px;">
+      <div style="display:flex;gap:6px;margin-top:8px;">
         <input type="text" id="newCrewName" placeholder="Name" style="flex:1;">
-        <input type="color" id="newCrewColor" value="#4299e1" style="width:40px;padding:2px;border-radius:4px;cursor:pointer;border:1px solid #4a5568;background:#2d3748;" data-tip="Crew Colour">
+        <input type="color" id="newCrewColor" value="#4299e1" style="width:36px;padding:2px;border-radius:4px;cursor:pointer;border:1px solid #4a5568;background:#2d3748;">
         <button class="btn" style="background:#38a169;" onclick="addCrewMember()">+</button>
       </div>
     </div>
   </div>
 
-  <div class="ss" id="elPanel" style="display:none; border-color:#63b3ed;">
-    <div class="ss-hdr" style="background:#2b4a6f; color:#fff;" onclick="toggleSS(this)">🔧 Selected Element <span class="arr">▾</span></div>
+  <!-- ACTS -->
+  <div class="ss">
+    <div class="ss-hdr" onclick="toggleSS(this)">🎭 Acts (run order) <span class="arr">▾</span></div>
     <div class="ss-body">
+      <div id="actList"></div>
+      <button class="btn btn-full" style="background:#805ad5;margin-top:4px;" onclick="addAct()">＋ Add Act</button>
+    </div>
+  </div>
+
+  <!-- ACTIVE PLOT DETAILS -->
+  <div class="ss">
+    <div class="ss-hdr" onclick="toggleSS(this)">✏️ Plot Details <span class="arr">▾</span></div>
+    <div class="ss-body">
+      <label>Ensemble / Act Title</label>
+      <input type="text" id="inTitle" oninput="updateActiveMeta()" placeholder="e.g. Senior Jazz Band">
+      <label>Show / Event Context</label>
+      <input type="text" id="inCtx" oninput="updateActiveMeta()" placeholder="e.g. Showcase 2026">
+      <label>Technical Notes</label>
+      <textarea id="inNotes" rows="3" oninput="updateActiveMeta()" placeholder="Patching notes, special requests..."></textarea>
+    </div>
+  </div>
+
+  <!-- SELECTED ELEMENT PANEL -->
+  <div class="ss" id="elPanel" style="display:none;">
+    <div class="ss-hdr" onclick="toggleSS(this)">🔧 Selected Element <span class="arr">▾</span></div>
+    <div class="ss-body">
+      <label>State</label>
+      <div style="display:flex;gap:6px;">
+        <button class="btn" id="stateOnBtn" style="background:#38a169;flex:1;" onclick="setSelectedState('on')">✓ ON</button>
+        <button class="btn" id="stateOffBtn" style="background:#718096;flex:1;" onclick="setSelectedState('off')">✕ OFF</button>
+      </div>
       <label>Assigned Crew</label>
       <select id="elCrewSelect" onchange="setSelectedCrew(this.value)" style="width:100%;"></select>
       <label>Label</label>
       <input type="text" id="elLabelInput" oninput="setSelectedLabel(this.value)" placeholder="e.g. B1 mic">
-      <button class="btn" style="background:#e53e3e;width:100%;margin-top:14px;" onclick="deleteSelected()" data-tip="Removes element from this and future acts. (Calculates as 'Strike' in changeover view).">🗑 Remove / Strike</button>
+      <button class="btn" style="background:#e53e3e;width:100%;margin-top:10px;" onclick="deleteSelected()">🗑 Remove Element</button>
     </div>
   </div>
 
-  <div class="ss">
+  <!-- GEAR TOOLBOX -->
+  <div class="ss closed">
     <div class="ss-hdr" onclick="toggleSS(this)">🧰 Gear Toolbox <span class="arr">▾</span></div>
     <div class="ss-body">
       <div class="size-row">
@@ -241,53 +262,82 @@ input[type=range] { flex:1; padding:0; background:transparent; border:none; acce
         <input type="range" id="sizeSlider" min="36" max="80" value="48" step="2" oninput="updateGearSize(this.value)">
         <span id="sizeLabel" style="color:#63b3ed;width:30px;text-align:right;">48px</span>
       </div>
-      <p style="font-size:8pt;color:#718096;margin:0 0 4px;text-align:center;">Click to drop • Drag to move</p>
+      <p style="font-size:7.5pt;color:#718096;margin:0 0 8px;">Click to place · Drag to position · Double-click to rename</p>
       <div class="gear-grid">
-        <button class="gear-btn" style="background:#4a5568;" onclick="spawnEl('🪑','Chair','#4a5568')">🪑 Chair</button>
-        <button class="gear-btn" style="background:#718096;" onclick="spawnEl('🎼','Stand','#718096')">🎼 Stand</button>
-        <button class="gear-btn" style="background:#e53e3e;" onclick="spawnEl('🎤','Mic Stand','#e53e3e')">🎤 Mic</button>
-        <button class="gear-btn" style="background:#9b2c2c;" onclick="spawnEl('📡','Wireless','#9b2c2c')">📡 Wireless</button>
-        <button class="gear-btn" style="background:#2b6cb0;" onclick="spawnEl('🥁','Drum Kit','#2b6cb0')">🥁 Drums</button>
-        <button class="gear-btn" style="background:#3182ce;" onclick="spawnEl('🎹','Keys','#3182ce')">🎹 Keys</button>
-        <button class="gear-btn" style="background:#dd6b20;" onclick="spawnEl('🎸','Amp','#dd6b20')">🎸 Amp</button>
-        <button class="gear-btn" style="background:#38a169;" onclick="spawnEl('🔊','Monitor','#38a169')">🔊 Monitor</button>
+        <button class="gear-btn" style="background:#4a5568;" onclick="spawnEl('🪑','Chair','#4a5568')" data-tip="Musician seating">🪑 Chair</button>
+        <button class="gear-btn" style="background:#718096;" onclick="spawnEl('🎼','Stand','#718096')" data-tip="Music stand">🎼 Stand</button>
+        <button class="gear-btn" style="background:#e53e3e;" onclick="spawnEl('🎤','Mic Stand','#e53e3e')" data-tip="Wired mic on stand">🎤 Mic Stand</button>
+        <button class="gear-btn" style="background:#9b2c2c;" onclick="spawnEl('📡','Wireless','#9b2c2c')" data-tip="Wireless / handheld mic">📡 Wireless</button>
+        <button class="gear-btn" style="background:#2b6cb0;" onclick="spawnEl('🥁','Drum Kit','#2b6cb0')" data-tip="Full drum kit" data-tip="Full drum kit footprint">🥁 Drum Kit</button>
+        <button class="gear-btn" style="background:#3182ce;" onclick="spawnEl('🎹','Keys','#3182ce')" data-tip="Keyboard / piano">🎹 Keys</button>
+        <button class="gear-btn" style="background:#dd6b20;" onclick="spawnEl('🎸','Amp','#dd6b20')" data-tip="Guitar or bass amp">🎸 Amp</button>
+        <button class="gear-btn" style="background:#38a169;" onclick="spawnEl('🔊','Monitor','#38a169')" data-tip="Stage wedge monitor">🔊 Monitor</button>
+        <button class="gear-btn" style="background:#6b46c1;" onclick="spawnEl('⭐','Stage Mic','#6b46c1')" data-tip="Overhead / stage mic">⭐ Stage Mic</button>
+        <button class="gear-btn" style="background:#2d3748;" onclick="spawnEl('🎻','Performer','#2d3748')" data-tip="Generic performer position">🎻 Performer</button>
       </div>
     </div>
   </div>
 
+  <!-- MIC CHANNELS -->
   <div class="ss closed">
     <div class="ss-hdr" onclick="toggleSS(this)">🎙️ Mic Channels <span class="arr">▾</span></div>
     <div class="ss-body">
+      <p style="font-size:7.5pt;color:#718096;margin:0 0 8px;">One row per desk input. Prints below the stage map.</p>
       <table class="mic-ch-table">
-        <thead><tr><th style="width:28px;">CH</th><th>Label</th><th style="width:80px;">Type</th><th style="width:24px;"></th></tr></thead>
+        <thead><tr><th style="width:26px;">CH</th><th>Label</th><th style="width:76px;">Type</th><th style="width:22px;"></th></tr></thead>
         <tbody id="micTableBody"></tbody>
       </table>
       <button class="add-ch-btn" onclick="addMicCh()">＋ Add Channel</button>
     </div>
   </div>
 
+  <!-- PRINT -->
   <div class="ss closed">
-    <div class="ss-hdr" onclick="toggleSS(this)">🖨️ Print & Save <span class="arr">▾</span></div>
-    <div class="ss-body" style="display:flex;flex-direction:column;gap:8px;">
-      <button class="btn btn-full" style="background:#2b6cb0;" onclick="doPrint('layout','single')" data-tip="Clean diagram for directors">🖨️ Print Layout (This Act)</button>
-      <button class="btn btn-full" style="background:#c53030;" onclick="doPrint('changeover','single')" data-tip="Crew colours + changeover lists">🖨️ Print Changeover (This Act)</button>
+    <div class="ss-hdr" onclick="toggleSS(this)">🖨️ Print <span class="arr">▾</span></div>
+    <div class="ss-body" style="display:flex;flex-direction:column;gap:6px;">
+      <button class="btn btn-full" style="background:#2b6cb0;" onclick="doPrint('layout','single')" data-tip="Clean diagram — for directors and performers">🖨️ Print Layout — This Act</button>
+      <button class="btn btn-full" style="background:#c53030;" onclick="doPrint('changeover','single')" data-tip="Crew colours + bring-on/strike lists">🖨️ Print Changeover — This Act</button>
       <div style="border-top:1px solid #2d3748;margin:4px 0;"></div>
-      <button class="btn btn-full" style="background:#1a365d;" onclick="doPrint('layout','all')" data-tip="All acts back to back">📚 Print All — Layout</button>
-      <button class="btn btn-full" style="background:#742a2a;" onclick="doPrint('changeover','all')" data-tip="All acts back to back">📚 Print All — Changeover</button>
-      <div style="border-top:1px solid #2d3748;margin:4px 0;"></div>
-      <div style="display:flex;gap:6px;">
-        <button class="btn" style="background:#4a5568;flex:1;" onclick="exportLocal()" data-tip="Save show as file">💾 Export</button>
-        <button class="btn" style="background:#4a5568;flex:1;" onclick="document.getElementById('localIn').click()" data-tip="Open show file">📁 Import</button>
-        <input type="file" id="localIn" style="display:none;" accept=".json" onchange="importLocal(event)">
+      <button class="btn btn-full" style="background:#1a365d;" onclick="doPrint('layout','all')" data-tip="All acts, layout view, back to back">📚 Print All — Layout</button>
+      <button class="btn btn-full" style="background:#742a2a;" onclick="doPrint('changeover','all')" data-tip="All acts, changeover view">📚 Print All — Changeover</button>
+    </div>
+  </div>
+
+  <!-- CLOUD -->
+  <div class="ss closed">
+    <div class="ss-hdr" onclick="toggleSS(this)">☁️ Cloud Save / Load <span class="arr">▾</span></div>
+    <div class="ss-body">
+      <label>Show Name</label>
+      <input type="text" id="projectName" placeholder="e.g. Showcase 2026">
+      <div style="display:flex;gap:6px;margin-top:8px;">
+        <button class="btn" style="background:#2b6cb0;flex:1;" onclick="saveToServer()">☁️ Save</button>
+        <button class="btn" style="background:#805ad5;flex:1;" onclick="updateOnServer()">🔄 Update</button>
+      </div>
+      <label style="margin-top:12px;">Saved Shows</label>
+      <select id="projectSelector" size="3" style="height:auto;background:#2d3748;color:#fff;width:100%;border:1px solid #4a5568;border-radius:6px;padding:6px;margin-top:4px;"><option disabled>— loading... —</option></select>
+      <div style="display:flex;gap:6px;margin-top:6px;">
+        <button class="btn" style="background:#38a169;flex:1;" onclick="loadFromServer()">📂 Open</button>
+        <button class="btn" style="background:#e53e3e;flex:1;" onclick="deleteFromServer()">🗑️ Delete</button>
       </div>
     </div>
   </div>
 
-  <button class="btn btn-full" style="background:#4a5568;margin-top:8px;" onclick="document.getElementById('helpOverlay').classList.add('visible')">❓ Help & Workflow</button>
+  <!-- LOCAL FILE -->
+  <div class="ss closed">
+    <div class="ss-hdr" onclick="toggleSS(this)">💾 Local File <span class="arr">▾</span></div>
+    <div class="ss-body" style="display:flex;gap:6px;">
+      <button class="btn" style="background:#4a5568;flex:1;" onclick="exportLocal()">💾 Export</button>
+      <button class="btn" style="background:#4a5568;flex:1;" onclick="document.getElementById('localIn').click()">📁 Import</button>
+      <input type="file" id="localIn" style="display:none;" accept=".json" onchange="importLocal(event)">
+    </div>
+  </div>
 
-</div>
-</div>
+  <button class="btn btn-full" style="background:#4a5568;margin-top:4px;" onclick="document.getElementById('helpOverlay').classList.add('visible')">❓ How to use</button>
 
+</div><!-- end sidebar-scroll -->
+</div><!-- end left-sidebar -->
+
+<!-- ══ RIGHT CANVAS ══ -->
 <div class="right-area" id="canvasArea"></div>
 
 <script>
@@ -300,12 +350,15 @@ let showDB = {
     { id:'c4', name:'Carter',   color:'#378ADD' }
   ],
   acts: [
-    { id:'a1', title:'Act 1: Jazz Band', ctx:'Showcase 2026', notes:'', micChannels:[], elements:[
-      { id:'el_1', icon:'🥁', label:'Drum Kit', color:'#2b6cb0', x:'42%', y:'12px', crew:'c1' },
-      { id:'el_2', icon:'🎹', label:'Keys',     color:'#3182ce', x:'65%', y:'15px', crew:'c2' },
-      { id:'el_3', icon:'🎼', label:'Stand',    color:'#718096', x:'30%', y:'40%', crew:'c3' },
-      { id:'el_4', icon:'🎼', label:'Stand',    color:'#718096', x:'40%', y:'40%', crew:'c3' }
-    ]}
+    { id:'a1', title:'Senior Concert Band', ctx:'Senior Showcase 2026', notes:'', micChannels:[], elements:[
+      { id:'e1', icon:'🥁', label:'Drum Kit', color:'#2b6cb0', x:'42%', y:'12px', state:'on', crew:'' },
+      { id:'e2', icon:'🎹', label:'Keys',     color:'#3182ce', x:'65%', y:'15px', state:'on', crew:'' }
+    ]},
+    { id:'a2', title:'Senior Strings', ctx:'Senior Showcase 2026', notes:'', micChannels:[], elements:[] },
+    { id:'a3', title:'Cert III Band',  ctx:'Senior Showcase 2026', notes:'', micChannels:[
+      { label:'Vox', type:'wireless' },
+      { label:'Keys DI', type:'wired' }
+    ], elements:[] }
   ],
   gearSize: 48
 };
@@ -313,16 +366,17 @@ let showDB = {
 let activeActIdx  = 0;
 let activeView    = 'layout';   // 'layout' | 'changeover'
 let selectedElId  = null;
-let elUID         = 1000;
+let elUID         = 200;
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 function init() {
   const saved = parseInt(localStorage.getItem('stagePlotGearSize')) || showDB.gearSize;
   updateGearSize(saved, false);
+  fetchProjectList();
   rebuildAll();
-  if (!localStorage.getItem('stagePlotHelpSeen2')) {
+  if (!localStorage.getItem('stagePlotHelpSeen')) {
     document.getElementById('helpOverlay').classList.add('visible');
-    localStorage.setItem('stagePlotHelpSeen2','1');
+    localStorage.setItem('stagePlotHelpSeen','1');
   }
 }
 
@@ -343,7 +397,7 @@ function renderCrewList() {
       <span class="crew-name">${c.name}</span>
       <button class="crew-remove" onclick="removeCrew(${i})" title="Remove">×</button>
     </div>`).join('');
-  
+  // Rebuild crew dropdown on selected element panel
   const sel = document.getElementById('elCrewSelect');
   if (sel) {
     sel.innerHTML = '<option value="">— Unassigned —</option>' +
@@ -363,6 +417,7 @@ function addCrewMember() {
 function removeCrew(i) {
   const id = showDB.crew[i].id;
   showDB.crew.splice(i,1);
+  // clear that crew assignment from all elements
   showDB.acts.forEach(a => a.elements.forEach(e => { if(e.crew===id) e.crew=''; }));
   rebuildAll();
 }
@@ -375,11 +430,11 @@ function renderActList() {
   el.innerHTML = showDB.acts.map((a,i) => `
     <div class="act-item${i===activeActIdx?' active':''}" onclick="selectAct(${i})">
       <span class="act-num">${i+1}</span>
-      <span class="act-name">${a.title||'[Untitled]'}</span>
+      <span class="act-title">${a.title||'[Untitled]'}</span>
       <div class="act-nav-btns">
-        <button class="act-nav-btn" onclick="event.stopPropagation();moveAct(${i},-1)" data-tip="Move Up">▲</button>
-        <button class="act-nav-btn" onclick="event.stopPropagation();moveAct(${i}, 1)" data-tip="Move Down">▼</button>
-        <button class="act-nav-btn danger" onclick="event.stopPropagation();deleteAct(${i})" data-tip="Delete Act">✕</button>
+        <button class="act-nav-btn" onclick="event.stopPropagation();moveAct(${i},-1)">▲</button>
+        <button class="act-nav-btn" onclick="event.stopPropagation();moveAct(${i}, 1)">▼</button>
+        <button class="act-nav-btn danger" onclick="event.stopPropagation();deleteAct(${i})">✕</button>
       </div>
     </div>`).join('');
 }
@@ -388,29 +443,22 @@ function selectAct(i) {
   savePositions();
   selectedElId = null;
   activeActIdx = i;
-  document.getElementById('elPanel').style.display='none';
   rebuildAll();
 }
 
 function addAct() {
   savePositions();
-  const baseAct = showDB.acts[activeActIdx];
-  // Deep clone elements to pull stage state forward
-  const clonedElements = baseAct ? baseAct.elements.map(e => ({...e})) : [];
-  const clonedMics = baseAct ? baseAct.micChannels.map(m => ({...m})) : [];
-  
-  const newAct = { 
-    id:'a'+Date.now(), 
-    title:'New Act', 
-    ctx: baseAct ? baseAct.ctx : '', 
-    notes:'', 
-    micChannels: clonedMics, 
-    elements: clonedElements 
-  };
-  
-  // Insert exactly after the currently selected act
-  showDB.acts.splice(activeActIdx + 1, 0, newAct);
-  activeActIdx = activeActIdx + 1;
+  const prev = showDB.acts[showDB.acts.length - 1];
+  showDB.acts.push({
+    id: 'a'+Date.now(),
+    title: 'New Act',
+    ctx: prev ? prev.ctx : '',
+    notes: '',
+    micChannels: [],
+    elements: []
+  });
+  activeActIdx = showDB.acts.length - 1;
+  recomputeInheritance();
   rebuildAll();
 }
 
@@ -425,11 +473,46 @@ function deleteAct(i) {
 
 function moveAct(i, dir) {
   savePositions();
-  const t=i+dir;
-  if (t<0||t>=showDB.acts.length) return;
-  [showDB.acts[i],showDB.acts[t]]=[showDB.acts[t],showDB.acts[i]];
-  activeActIdx=t;
+  const t = i + dir;
+  if (t < 0 || t >= showDB.acts.length) return;
+  [showDB.acts[i], showDB.acts[t]] = [showDB.acts[t], showDB.acts[i]];
+  activeActIdx = t;
+  recomputeInheritance();
   rebuildAll();
+}
+
+// After any reorder, walk every act in order and ensure:
+// - Elements that existed in the previous act and are NOT explicitly added
+//   in this act are present as OFF (strike candidates)
+// - We only touch elements whose id starts with 'inh_' (inherited markers)
+//   so user-placed elements are never clobbered
+function recomputeInheritance() {
+  for (let i = 1; i < showDB.acts.length; i++) {
+    const prev = showDB.acts[i - 1];
+    const curr = showDB.acts[i];
+
+    // Get the ON elements from the previous act
+    const prevOn = prev.elements.filter(e => e.state === 'on');
+
+    // Remove stale inherited elements (ones from a previous inheritance pass)
+    curr.elements = curr.elements.filter(e => !e._inherited);
+
+    // For each prev ON element, if the current act doesn't already have
+    // a user-placed element with the same origin id, add it as OFF
+    prevOn.forEach(pe => {
+      const originId = pe._originId || pe.id;
+      const alreadyPresent = curr.elements.some(e => (e._originId || e.id) === originId);
+      if (!alreadyPresent) {
+        curr.elements.push({
+          ...pe,
+          id: 'inh_' + (++elUID),
+          state: 'off',
+          _inherited: true,
+          _originId: originId
+        });
+      }
+    });
+  }
 }
 
 function syncDetailsPanel() {
@@ -447,6 +530,7 @@ function updateActiveMeta() {
   a.ctx   = document.getElementById('inCtx').value;
   a.notes = document.getElementById('inNotes').value;
   renderActList();
+  // update header in canvas live
   const hdr = document.querySelector('.plot-header h1');
   const sub = document.querySelector('.plot-header h2');
   if (hdr) hdr.innerText = a.title;
@@ -490,56 +574,7 @@ function syncMicTray() {
     <div class="mic-chip">
       <div class="ch-badge ${ch.type}">${i+1}</div>
       <div><strong>${ch.label||'—'}</strong><span class="ch-type">${ch.type==='wireless'?'📡 Wireless':'🔌 Wired'}</span></div>
-    </div>`).join('') : '<span style="font-size:9pt;color:#a0aec0;font-style:italic;">No channels — add them in the left panel.</span>';
-}
-
-// ─── DIFFING ENGINE (SMART CHANGEOVERS) ───────────────────────────────────────
-function calculateDiffs(prevEls, currEls) {
-  const prevMap = new Map((prevEls||[]).map(e => [e.id, e]));
-  const currMap = new Map((currEls||[]).map(e => [e.id, e]));
-
-  const bringOnRaw = [];
-  const strikeRaw = [];
-
-  // Exists in current but not previous = Bring On
-  (currEls||[]).forEach(e => { if (!prevMap.has(e.id)) bringOnRaw.push(e); });
-  // Exists in previous but not current = Strike
-  (prevEls||[]).forEach(e => { if (!currMap.has(e.id)) strikeRaw.push(e); });
-
-  const groupItems = (arr) => {
-    const res = {};
-    arr.forEach(e => {
-      // Group by identifying traits
-      const sig = `${e.icon}|${e.label}|${e.crew}`;
-      if (!res[sig]) res[sig] = { count: 0, icon: e.icon, label: e.label, crew: e.crew };
-      res[sig].count++;
-    });
-    // Sort by crew name then item name
-    return Object.values(res).sort((a,b) => {
-      const cA = crewById(a.crew)?.name || 'Z';
-      const cB = crewById(b.crew)?.name || 'Z';
-      if (cA !== cB) return cA.localeCompare(cB);
-      return (a.label||'').localeCompare(b.label||'');
-    });
-  };
-
-  return {
-    bringOnList: groupItems(bringOnRaw),
-    strikeList: groupItems(strikeRaw),
-    ghosts: strikeRaw // raw items needed to draw faded strike locations
-  };
-}
-
-function generateCoListHTML(groups, emptyMsg) {
-  if (!groups.length) return `<span class="co-empty">${emptyMsg}</span>`;
-  return groups.map(g => {
-    const c = crewById(g.crew);
-    return `<div class="co-item">
-      <div class="co-color-box" style="background:${c ? c.color : '#cbd5e0'};"></div>
-      <span>${g.count}x ${g.icon} ${g.label||'Item'}</span>
-      <span class="co-who">${c ? c.name : '—'}</span>
-    </div>`;
-  }).join('');
+    </div>`).join('') : '<span style="font-size:8pt;color:#a0aec0;font-style:italic;">No channels — add them in the left panel.</span>';
 }
 
 // ─── CANVAS ───────────────────────────────────────────────────────────────────
@@ -548,33 +583,57 @@ function renderCanvas() {
   const a    = showDB.acts[activeActIdx];
   if (!a) { area.innerHTML=''; return; }
 
-  const prevAct = activeActIdx > 0 ? showDB.acts[activeActIdx - 1] : null;
-  const diffs = calculateDiffs(prevAct ? prevAct.elements : [], a.elements);
-
+  // Build crew legend HTML
   const legendHTML = showDB.crew.map(c=>`
     <div class="crew-legend-item">
-      <div class="crew-legend-box" style="background:${c.color};"></div>
+      <div class="crew-legend-dot" style="background:${c.color};"></div>
       <span>${c.name}</span>
     </div>`).join('');
 
+  // View toggle bar
   const toggleBar = `
-    <div class="view-toggle-bar" style="display:flex;align-items:center;gap:14px;margin-bottom:16px;width:210mm;">
+    <div class="view-toggle-bar" style="display:flex;align-items:center;gap:12px;margin-bottom:14px;width:210mm;">
       <div class="view-toggle">
         <button class="vt-btn${activeView==='layout'?' active':''}" onclick="setView('layout')">Layout</button>
         <button class="vt-btn${activeView==='changeover'?' active':''}" onclick="setView('changeover')">Changeover</button>
       </div>
-      <span style="font-size:9.5pt;color:#4a5568;">${activeView==='layout'?'Clean gear colours':'Crew colours + Smart Bring On / Strike lists'}</span>
+      <span style="font-size:9pt;color:#4a5568;">${activeView==='layout'?'Clean diagram — for directors & performers':'Crew assignments + bring-on / strike lists'}</span>
     </div>`;
 
-  const changeoverHTML = activeView === 'changeover' ? `
+  // Changeover lists (auto-generated from elements)
+  const onEls  = a.elements.filter(e=>e.state==='on');
+  const offEls = a.elements.filter(e=>e.state==='off');
+
+  const groupEls = (els) => {
+    // Group by crew + label, count duplicates
+    const map = {};
+    els.forEach(e => {
+      const c = crewById(e.crew);
+      const key = (e.crew||'none') + '||' + (e.label||e.icon);
+      if (!map[key]) map[key] = { label: e.label||e.icon, crew: c, count: 0, color: c?c.color:'#cbd5e0', who: c?c.name:'—' };
+      map[key].count++;
+    });
+    return Object.values(map);
+  };
+  const coListHTML = (els, emptyMsg) => {
+    if (!els.length) return `<span class="co-empty">${emptyMsg}</span>`;
+    return groupEls(els).map(g => `
+      <div class="co-item">
+        <div class="co-dot" style="background:${g.color};"></div>
+        <span>${g.count > 1 ? g.count+'× ' : ''}${g.label}</span>
+        <span class="co-who">${g.who}</span>
+      </div>`).join('');
+  };
+
+  const changeoverHTML = activeView==='changeover' ? `
     <div class="changeover-grid">
       <div class="co-panel bring-on">
-        <p class="co-hdr bring-on">▼ Bring on (From prev act)</p>
-        ${generateCoListHTML(diffs.bringOnList, 'Nothing coming on')}
+        <p class="co-hdr bring-on">▼ Bring on</p>
+        ${coListHTML(onEls,'Nothing coming on')}
       </div>
       <div class="co-panel strike">
-        <p class="co-hdr strike">▲ Strike (From prev act)</p>
-        ${generateCoListHTML(diffs.strikeList, 'Nothing coming off')}
+        <p class="co-hdr strike">▲ Strike</p>
+        ${coListHTML(offEls,'Nothing coming off')}
       </div>
     </div>` : '';
 
@@ -608,7 +667,7 @@ function renderCanvas() {
     </div>`;
 
   syncMicTray();
-  placeElements(diffs.ghosts);
+  placeElements();
 }
 
 function setView(v) {
@@ -620,75 +679,42 @@ function setView(v) {
 }
 
 // ─── ELEMENTS ─────────────────────────────────────────────────────────────────
-function placeElements(ghostsToDraw = []) {
+function placeElements() {
   const grid = document.getElementById('stageGrid');
   if (!grid) return;
   const a = showDB.acts[activeActIdx];
-  
-  // Draw Active Elements
-  (a.elements||[]).forEach(ed => drawNodeToGrid(grid, ed, false));
-  
-  // Draw Strike Ghosts (only in changeover view)
-  if (activeView === 'changeover') {
-    ghostsToDraw.forEach(ed => drawNodeToGrid(grid, ed, true));
-  }
+  (a.elements||[]).forEach(ed => {
+    const el = document.createElement('div');
+    el.className = `placed-el state-${ed.state||'on'}`;
+    el.id = 'el_'+ed.id;
+    el.style.backgroundColor = ed.color;
+    el.style.borderColor      = adjustColor(ed.color, -40);
+    el.style.left = ed.x;
+    el.style.top  = ed.y;
 
-  // Click canvas = deselect
-  grid.addEventListener('click', () => { 
-    selectedElId=null; 
-    document.querySelectorAll('.placed-el').forEach(el => el.style.outline='none');
-    document.getElementById('elPanel').style.display='none'; 
-  });
-}
+    const crewC = crewById(ed.crew);
+    // In changeover view, box colour = crew colour. In layout view, box colour = gear colour.
+    const boxColor = (activeView === 'changeover' && crewC) ? crewC.color : ed.color;
+    el.style.backgroundColor = boxColor;
+    el.style.borderColor     = adjustColor(boxColor, -40);
 
-function drawNodeToGrid(grid, ed, isGhost) {
-  const el = document.createElement('div');
-  const crewC = crewById(ed.crew);
-  
-  // In Changeover view, boxes take crew colour (if assigned).
-  const bgColor = (activeView === 'changeover' && crewC) ? crewC.color : ed.color;
-  
-  el.className = `placed-el ${isGhost ? 'ghost-el' : ''}`;
-  if (!isGhost) el.id = 'el_' + ed.id;
-  
-  el.style.backgroundColor = bgColor;
-  el.style.borderColor = adjustColor(bgColor, -40);
-  el.style.left = ed.x;
-  el.style.top  = ed.y;
+    el.innerHTML = `
+      <span class="el-icon">${ed.icon}</span>
+      <span class="el-label" style="color:white;">${ed.label||''}</span>
+      <button class="el-remove" onclick="event.stopPropagation();deleteElById('${ed.id}')">✕</button>`;
 
-  const removeBtn = !isGhost ? `<button class="el-remove" onclick="event.stopPropagation();deleteElById('${ed.id}')" data-tip="Remove">✕</button>` : '';
-
-  el.innerHTML = `
-    <span class="el-icon">${ed.icon}</span>
-    <span class="el-label">${ed.label||''}</span>
-    ${removeBtn}`;
-
-  if (!isGhost) {
     el.onclick = (e) => { e.stopPropagation(); selectEl(ed.id); };
     el.ondblclick = (e) => {
       e.stopPropagation();
       const n = prompt('Rename element:', ed.label||ed.icon);
-      if (n!==null) { 
-        const oldVal = ed.label;
-        ed.label = n.trim(); 
-        
-        // Cascade rename to future acts IF they haven't been renamed independently
-        for(let i = activeActIdx + 1; i < showDB.acts.length; i++) {
-          const futureEd = showDB.acts[i].elements.find(f => f.id === ed.id);
-          if (futureEd && futureEd.label === oldVal) futureEd.label = ed.label;
-        }
-        
-        renderCanvas(); 
-        selectEl(ed.id); 
-      }
+      if (n!==null) { ed.label=n.trim(); renderCanvas(); selectEl(ed.id); }
     };
+    grid.appendChild(el);
     attachDrag(el, ed);
-  } else {
-    // Add tooltip to ghost
-    el.setAttribute('data-tip', `STRIKE: ${ed.label||ed.icon}`);
-  }
-  
-  grid.appendChild(el);
+  });
+
+  // Click canvas = deselect
+  grid.addEventListener('click', () => { selectedElId=null; document.getElementById('elPanel').style.display='none'; });
 }
 
 function selectEl(id) {
@@ -700,53 +726,50 @@ function selectEl(id) {
   // Highlight
   document.querySelectorAll('.placed-el').forEach(el => el.style.outline='none');
   const node = document.getElementById('el_'+id);
-  if (node) node.style.outline='3px solid #63b3ed';
+  if (node) node.style.outline='2px solid #63b3ed';
 
   // Sync panel
   const panel = document.getElementById('elPanel');
   panel.style.display='block';
   document.getElementById('elLabelInput').value = ed.label||'';
 
+  // Rebuild crew select with current value
   const sel = document.getElementById('elCrewSelect');
   sel.innerHTML = '<option value="">— Unassigned —</option>' +
     showDB.crew.map(c=>`<option value="${c.id}"${c.id===ed.crew?' selected':''}>${c.name}</option>`).join('');
+
+  // State buttons
+  document.getElementById('stateOnBtn').style.background  = ed.state==='on'  ? '#38a169':'#4a5568';
+  document.getElementById('stateOffBtn').style.background = ed.state==='off' ? '#c53030':'#4a5568';
+}
+
+function setSelectedState(state) {
+  if (!selectedElId) return;
+  const a = showDB.acts[activeActIdx];
+  const ed = a.elements.find(e => e.id === selectedElId);
+  if (ed) {
+    ed.state = state;
+    savePositions();
+    recomputeInheritance();
+    renderCanvas();
+    selectEl(selectedElId);
+  }
 }
 
 function setSelectedCrew(crewId) {
   if (!selectedElId) return;
-  const a = showDB.acts[activeActIdx];
-  const ed = a.elements.find(e=>e.id===selectedElId);
-  if (ed) { 
-    const oldCrew = ed.crew;
-    ed.crew = crewId; 
-    
-    // Cascade to future acts IF they haven't been reassigned independently
-    for(let i = activeActIdx + 1; i < showDB.acts.length; i++) {
-      const futureEd = showDB.acts[i].elements.find(f => f.id === selectedElId);
-      if (futureEd && futureEd.crew === oldCrew) futureEd.crew = crewId;
-    }
-    
-    savePositions(); 
-    renderCanvas(); 
-    selectEl(selectedElId); 
-  }
+  const a=showDB.acts[activeActIdx];
+  const ed=a.elements.find(e=>e.id===selectedElId);
+  if (ed) { ed.crew=crewId; savePositions(); renderCanvas(); selectEl(selectedElId); }
 }
 
 function setSelectedLabel(val) {
   if (!selectedElId) return;
-  const a = showDB.acts[activeActIdx];
-  const ed = a.elements.find(e=>e.id===selectedElId);
+  const a=showDB.acts[activeActIdx];
+  const ed=a.elements.find(e=>e.id===selectedElId);
   if (ed) {
-    const oldVal = ed.label;
-    ed.label = val;
-    
-    // Cascade to future acts IF they haven't been renamed independently
-    for(let i = activeActIdx + 1; i < showDB.acts.length; i++) {
-      const futureEd = showDB.acts[i].elements.find(f => f.id === selectedElId);
-      if (futureEd && futureEd.label === oldVal) futureEd.label = val;
-    }
-    
-    const node = document.getElementById('el_'+selectedElId);
+    ed.label=val;
+    const node=document.getElementById('el_'+selectedElId);
     if (node) { const lbl=node.querySelector('.el-label'); if(lbl) lbl.textContent=val; }
   }
 }
@@ -757,11 +780,9 @@ function deleteSelected() {
 }
 
 function deleteElById(id) {
-  // Removes from current act AND ALL FUTURE ACTS automatically!
-  for(let i = activeActIdx; i < showDB.acts.length; i++) {
-    showDB.acts[i].elements = showDB.acts[i].elements.filter(e => e.id !== id);
-  }
-  selectedElId = null;
+  const a=showDB.acts[activeActIdx];
+  a.elements=a.elements.filter(e=>e.id!==id);
+  selectedElId=null;
   document.getElementById('elPanel').style.display='none';
   renderCanvas();
 }
@@ -769,13 +790,7 @@ function deleteElById(id) {
 function spawnEl(icon, label, color) {
   savePositions();
   elUID++;
-  const newEl = { id:'el_'+elUID, icon, label, color, x:'40%', y:'35%', crew:'' };
-  
-  // Instantly cascade drop onto current act AND ALL FUTURE ACTS
-  for(let i = activeActIdx; i < showDB.acts.length; i++) {
-    showDB.acts[i].elements.push({...newEl});
-  }
-  
+  showDB.acts[activeActIdx].elements.push({ id:'el'+elUID, icon, label, color, x:'38%', y:'30%', state:'on', crew:'' });
   renderCanvas();
 }
 
@@ -802,33 +817,13 @@ function attachDrag(node, ed) {
 
 // ─── SAVE POSITIONS ───────────────────────────────────────────────────────────
 function savePositions() {
-  const a = showDB.acts[activeActIdx];
-  const grid = document.getElementById('stageGrid');
+  const a=showDB.acts[activeActIdx];
+  const grid=document.getElementById('stageGrid');
   if (!grid||!a) return;
-  
-  grid.querySelectorAll('.placed-el:not(.ghost-el)').forEach(node => {
-    const id = node.id.replace('el_','');
-    const ed = a.elements.find(e=>e.id===id);
-    if (ed) { 
-      const oldX = ed.x;
-      const oldY = ed.y;
-      const newX = node.style.left;
-      const newY = node.style.top;
-      
-      ed.x = newX; 
-      ed.y = newY; 
-      
-      if (oldX !== newX || oldY !== newY) {
-        // Cascade move to future acts IF they haven't been independently moved already
-        for(let i = activeActIdx + 1; i < showDB.acts.length; i++) {
-          const futureEd = showDB.acts[i].elements.find(f => f.id === id);
-          if (futureEd && futureEd.x === oldX && futureEd.y === oldY) {
-            futureEd.x = newX;
-            futureEd.y = newY;
-          }
-        }
-      }
-    }
+  grid.querySelectorAll('.placed-el').forEach(node => {
+    const id=node.id.replace('el_','');
+    const ed=a.elements.find(e=>e.id===id);
+    if (ed) { ed.x=node.style.left; ed.y=node.style.top; }
   });
 }
 
@@ -841,6 +836,7 @@ function updateGearSize(val, save=true) {
   if(lbl) lbl.textContent=px+'px';
   if(sld) sld.value=px;
   localStorage.setItem('stagePlotGearSize', px);
+  if(save && showDB.acts[activeActIdx]) showDB.acts[activeActIdx].gearSize=px;
 }
 
 // ─── PRINT ────────────────────────────────────────────────────────────────────
@@ -850,6 +846,7 @@ function doPrint(view, scope) {
   activeView = view;
 
   if (scope==='single') {
+    // render single page in print view
     renderCanvas();
     setTimeout(() => {
       document.body.classList.add('print-single');
@@ -864,54 +861,39 @@ function doPrint(view, scope) {
       }, 100);
     }, 80);
   } else {
-    // Print All Flow
+    // all acts — render each page sequentially
     const area=document.getElementById('canvasArea');
     const prevIdx=activeActIdx;
     area.innerHTML='';
-    
     showDB.acts.forEach((a,i) => {
       activeActIdx=i;
-      const prevAct = i > 0 ? showDB.acts[i - 1] : null;
-      const diffs = calculateDiffs(prevAct ? prevAct.elements : [], a.elements);
-      
-      const legendHTML=showDB.crew.map(c=>`<div class="crew-legend-item"><div class="crew-legend-box" style="background:${c.color};"></div><span>${c.name}</span></div>`).join('');
-      const changeoverHTML=view==='changeover'?`<div class="changeover-grid"><div class="co-panel bring-on"><p class="co-hdr bring-on">▼ Bring on</p>${generateCoListHTML(diffs.bringOnList,'Nothing coming on')}</div><div class="co-panel strike"><p class="co-hdr strike">▲ Strike</p>${generateCoListHTML(diffs.strikeList,'Nothing coming off')}</div></div>`:'';
+      // build page HTML inline
+      const legendHTML=showDB.crew.map(c=>`<div class="crew-legend-item"><div class="crew-legend-dot" style="background:${c.color};"></div><span>${c.name}</span></div>`).join('');
+      const onEls=a.elements.filter(e=>e.state==='on');
+      const offEls=a.elements.filter(e=>e.state==='off');
+      const groupB=(els)=>{const m={};els.forEach(e=>{const c=crewById(e.crew);const k=(e.crew||'none')+'||'+(e.label||e.icon);if(!m[k])m[k]={label:e.label||e.icon,color:c?c.color:'#cbd5e0',who:c?c.name:'—',count:0};m[k].count++;});return Object.values(m);};
+      const coList=(els,msg)=>els.length?groupB(els).map(g=>`<div class="co-item"><div class="co-dot" style="background:${g.color};"></div><span>${g.count>1?g.count+'× ':''}${g.label}</span><span class="co-who">${g.who}</span></div>`).join(''):`<span class="co-empty">${msg}</span>`;
+      const changeoverHTML=view==='changeover'?`<div class="changeover-grid"><div class="co-panel bring-on"><p class="co-hdr bring-on">▼ Bring on</p>${coList(onEls,'Nothing coming on')}</div><div class="co-panel strike"><p class="co-hdr strike">▲ Strike</p>${coList(offEls,'Nothing coming off')}</div></div>`:'';
       const badge=`<span class="view-badge ${view==='layout'?'badge-layout':'badge-changeover'}">${view==='layout'?'Layout view':'Changeover view'}</span>`;
       const chs=a.micChannels||[];
-      const micHTML=chs.length?chs.map((ch,ci)=>`<div class="mic-chip"><div class="ch-badge ${ch.type}">${ci+1}</div><div><strong>${ch.label||'—'}</strong><span class="ch-type">${ch.type==='wireless'?'📡 Wireless':'🔌 Wired'}</span></div></div>`).join(''):'<span style="font-size:9pt;color:#a0aec0;font-style:italic;">No channels assigned.</span>';
-      
+      const micHTML=chs.length?chs.map((ch,ci)=>`<div class="mic-chip"><div class="ch-badge ${ch.type}">${ci+1}</div><div><strong>${ch.label||'—'}</strong><span class="ch-type">${ch.type==='wireless'?'📡 Wireless':'🔌 Wired'}</span></div></div>`).join(''):'<span style="font-size:8pt;color:#a0aec0;font-style:italic;">No channels assigned.</span>';
       const page=document.createElement('div');
       page.className='plot-page';
       page.innerHTML=`<div class="plot-header"><h1>${a.title||'[Untitled]'}</h1><h2>${a.ctx||''}</h2>${badge}${view==='changeover'?`<div class="crew-legend">${legendHTML}</div>`:''}</div><div class="plot-body"><div class="zone-label">↑ UPSTAGE (BACK WALL) ↑</div><div class="stage-grid" id="sg_${i}"><div class="stage-lip"></div><div class="stage-lip-label">STAGE LIP</div></div><div class="zone-label">↓ DOWNSTAGE — AUDIENCE ↓</div>${changeoverHTML}<div class="mic-tray-section"><div class="mic-tray-hdr">🎙️ Microphone Channels · ${a.title}</div><div class="mic-tray-body" style="display:flex;flex-wrap:wrap;gap:5px;">${micHTML}</div></div><div class="tech-notes-area"><h4>Technical &amp; Patching Notes</h4><div class="notes-box">${a.notes||''}</div></div></div>`;
       area.appendChild(page);
-      
+      // Place elements
       const grid=document.getElementById('sg_'+i);
-      
-      // Draw standard elements
-      a.elements.forEach(ed => {
+      a.elements.forEach(ed=>{
         const n=document.createElement('div');
-        const crewC = crewById(ed.crew);
-        const bgColor = (view === 'changeover' && crewC) ? crewC.color : ed.color;
-        n.className=`placed-el`;
-        n.style.backgroundColor=bgColor; n.style.borderColor=adjustColor(bgColor,-40);
+        n.className=`placed-el state-${ed.state||'on'}`;
+        n.style.backgroundColor=ed.color; n.style.borderColor=adjustColor(ed.color,-40);
         n.style.left=ed.x; n.style.top=ed.y;
-        n.innerHTML=`<span class="el-icon">${ed.icon}</span><span class="el-label">${ed.label||''}</span>`;
+        const crewC=crewById(ed.crew);
+        const boxColor=(view==='changeover'&&crewC)?crewC.color:ed.color;
+        n.style.backgroundColor=boxColor; n.style.borderColor=adjustColor(boxColor,-40);
+        n.innerHTML=`<span class="el-icon">${ed.icon}</span><span class="el-label" style="color:white;">${ed.label||''}</span>`;
         grid.appendChild(n);
       });
-
-      // Draw Ghosts in print
-      if (view === 'changeover') {
-        diffs.ghosts.forEach(ed => {
-          const n=document.createElement('div');
-          const crewC = crewById(ed.crew);
-          const bgColor = crewC ? crewC.color : ed.color;
-          n.className=`placed-el ghost-el`;
-          n.style.backgroundColor=bgColor; n.style.borderColor=adjustColor(bgColor,-40);
-          n.style.left=ed.x; n.style.top=ed.y;
-          n.innerHTML=`<span class="el-icon">${ed.icon}</span><span class="el-label">${ed.label||''}</span>`;
-          grid.appendChild(n);
-        });
-      }
     });
     setTimeout(()=>{
       window.print();
@@ -947,16 +929,75 @@ document.addEventListener('mouseover', e=>{
 document.addEventListener('mousemove', e=>{ if(tt.style.display==='block') positionTT(e); });
 document.addEventListener('mouseout',  e=>{ if(!e.target.closest('[data-tip]')) tt.style.display='none'; });
 function positionTT(e) {
-  const pad=12;
+  const pad=10;
   let x=e.clientX-tt.offsetWidth/2;
-  let y=e.clientY+20;
+  let y=e.clientY-tt.offsetHeight-10;
   if(x<pad) x=pad;
   if(x+tt.offsetWidth>window.innerWidth-pad) x=window.innerWidth-tt.offsetWidth-pad;
-  if(y+tt.offsetHeight>window.innerHeight-pad) y=e.clientY-tt.offsetHeight-10;
+  if(y<pad) y=e.clientY+18;
   tt.style.left=x+'px'; tt.style.top=y+'px';
 }
 
-// ─── LOCAL FILE SAVE/LOAD ────────────────────────────────────────────────────
+// ─── SERVER PERSISTENCE ──────────────────────────────────────────────────────
+const APP_TYPE='stageplot';
+let currentProjectId=null;
+
+async function fetchProjectList() {
+  try {
+    const res=await fetch(`/api/projects?app_type=${APP_TYPE}`);
+    const projects=await res.json();
+    const sel=document.getElementById('projectSelector');
+    sel.innerHTML=projects.length?projects.map(p=>`<option value="${p.id}">${p.name}</option>`).join(''):'<option disabled>No saved plots yet</option>';
+  } catch(e){console.warn('Server unreachable');}
+}
+
+async function saveToServer() {
+  savePositions();
+  const name=document.getElementById('projectName').value.trim();
+  if(!name) return alert('Enter a show name first.');
+  try {
+    const res=await fetch('/api/projects',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({app_type:APP_TYPE,name,payload:showDB})});
+    const data=await res.json();
+    currentProjectId=data.id;
+    alert(`✅ Saved as "${name}"`);
+    fetchProjectList();
+  } catch(e){alert('Save failed: '+e.message);}
+}
+
+async function updateOnServer() {
+  savePositions();
+  if(!currentProjectId) return alert('No show open — use ☁️ Save first.');
+  try {
+    await fetch(`/api/projects/${currentProjectId}`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:document.getElementById('projectName').value.trim()||undefined,payload:showDB})});
+    alert('✅ Saved!');
+  } catch(e){alert('Update failed: '+e.message);}
+}
+
+async function loadFromServer() {
+  const id=document.getElementById('projectSelector').value;
+  if(!id) return alert('Select a show first.');
+  try {
+    const res=await fetch(`/api/projects/${id}`);
+    const project=await res.json();
+    showDB=project.payload; activeActIdx=0; currentProjectId=project.id;
+    document.getElementById('projectName').value=project.name;
+    const sz=showDB.gearSize||48; updateGearSize(sz,false);
+    rebuildAll();
+    alert(`📂 Loaded "${project.name}"`);
+  } catch(e){alert('Load failed: '+e.message);}
+}
+
+async function deleteFromServer() {
+  const id=document.getElementById('projectSelector').value;
+  if(!id) return alert('Select a show to delete.');
+  if(!confirm('Delete permanently?')) return;
+  try {
+    await fetch(`/api/projects/${id}`,{method:'DELETE'});
+    if(currentProjectId===Number(id)) currentProjectId=null;
+    fetchProjectList();
+  } catch(e){alert('Delete failed: '+e.message);}
+}
+
 function exportLocal() {
   savePositions();
   const blob=new Blob([JSON.stringify(showDB,null,2)],{type:'application/json'});
